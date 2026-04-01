@@ -34,7 +34,7 @@ public abstract class BaseBullet extends AbstractFlyingObject {
             vanish();
         }
     }
-
+    // 用于计算在碰撞检测中减少的生命值
     public int getPower() {
         return power;
     }

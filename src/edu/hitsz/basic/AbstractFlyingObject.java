@@ -106,6 +106,7 @@ public abstract class AbstractFlyingObject {
 
     public BufferedImage getImage() {
         if (image == null){
+            // 获取图片 this 表示当前对象 图片是同一种类共享的
             image = ImageManager.get(this);
         }
         return image;

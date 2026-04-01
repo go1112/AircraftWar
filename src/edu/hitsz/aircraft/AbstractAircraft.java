@@ -13,21 +13,21 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
     //最大生命值
     protected int maxHp;
     protected int hp;
-
+    // 构造器
     public AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY);
         this.hp = hp;
         this.maxHp = hp;
     }
-
+    // 扣除血量
     public void decreaseHp(int decrease){
         hp -= decrease;
         if(hp <= 0){
             hp=0;
-            vanish();
+            vanish(); // 标记消失
         }
     }
-
+    // 获取血量
     public int getHp() {
         return hp;
     }

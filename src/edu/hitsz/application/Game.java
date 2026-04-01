@@ -14,51 +14,52 @@ import java.util.concurrent.*;
 
 /**
  * 游戏主面板，游戏启动
+ * 
  * @author hitsz
  */
 public class Game extends JPanel {
 
     private int backGroundTop = 0;
 
-    //调度器, 用于定时任务调度
+    // 调度器, 用于定时任务调度
     private final Timer timer;
-    //时间间隔(ms)，控制刷新频率
+    // 时间间隔(ms)，控制刷新频率
     private final int timeInterval = 40;
 
     private final HeroAircraft heroAircraft;
-    private final List<AbstractAircraft> enemyAircrafts;
+    private final List<AbstractAircraft> enemyAircrafts; // 多态数组
     private final List<BaseBullet> heroBullets;
     private final List<BaseBullet> enemyBullets;
 
-    //屏幕中出现的敌机最大数量
+    // 屏幕中出现的敌机最大数量
     private final int enemyMaxNumber = 5;
 
-    //敌机生成周期
-    protected double enemySpawnCycle  =  20;
+    // 敌机生成周期
+    protected double enemySpawnCycle = 20;
     private int enemySpawnCounter = 0;
 
-    //英雄机和敌机射击周期
+    // 英雄机和敌机射击周期
     protected double shootCycle = 20;
     private int shootCounter = 0;
 
-    //当前玩家分数
+    // 当前玩家分数
     private int score = 0;
 
-    //游戏结束标志
+    // 游戏结束标志
     private boolean gameOverFlag = false;
 
     public Game() {
         // 由于采用单例模式 所以用getInstance方法来获取对象
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
-                Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight() ,
+                Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
                 0, 0, 100);
 
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
         enemyBullets = new LinkedList<>();
 
-        //启动英雄机鼠标监听
+        // 启动英雄机鼠标监听
         new HeroController(this, heroAircraft);
 
         this.timer = new Timer("game-action-timer", true);
@@ -76,7 +77,7 @@ public class Game extends JPanel {
             public void run() {
 
                 enemySpawnCounter++;
-                if (enemySpawnCounter >=enemySpawnCycle) {
+                if (enemySpawnCounter >= enemySpawnCycle) {
                     enemySpawnCounter = 0;
                     // 产生普通敌机
                     if (enemyAircrafts.size() < enemyMaxNumber) {
@@ -85,8 +86,16 @@ public class Game extends JPanel {
                                 (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
                                 0,
                                 10,
-                                30
-                        ));
+                                30));
+                    }
+                    // 产生精英敌机
+                    if (enemyAircrafts.size() < enemyMaxNumber) {
+                        enemyAircrafts.add(new EliteEnemy(
+                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
+                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
+                                0,
+                                10,
+                                30));
                     }
                 }
 
@@ -107,21 +116,24 @@ public class Game extends JPanel {
             }
         };
         // 以固定延迟时间进行执行：本次任务执行完成后，延迟 timeInterval 再执行下一次
-        timer.schedule(task,0,timeInterval);
+        timer.schedule(task, 0, timeInterval);
 
     }
 
-    //***********************
-    //      Action 各部分
-    //***********************
+    // ***********************
+    // Action 各部分
+    // ***********************
 
     private void shootAction() {
         shootCounter++;
         if (shootCounter >= shootCycle) {
             shootCounter = 0;
-            //英雄机射击
+            // 英雄机射击
             heroBullets.addAll(heroAircraft.shoot());
-            // TODO 敌机射击
+            // 敌机射击
+            for (AbstractAircraft enemyAircraft : enemyAircrafts) {
+                enemyBullets.addAll(enemyAircraft.shoot());
+            }
         }
     }
 
@@ -140,7 +152,6 @@ public class Game extends JPanel {
         }
     }
 
-
     /**
      * 碰撞检测：
      * 1. 敌机攻击英雄
@@ -149,6 +160,15 @@ public class Game extends JPanel {
      */
     private void crashCheckAction() {
         // TODO 敌机子弹攻击英雄机
+        for (BaseBullet bullet : enemyBullets) {
+            if (bullet.notValid()) {
+                continue;
+            }
+            if (heroAircraft.crash(bullet)) {
+                heroAircraft.decreaseHp(bullet.getPower());
+                bullet.vanish();
+            }
+        }
 
         // 英雄子弹攻击敌机
         for (BaseBullet bullet : heroBullets) {
@@ -199,7 +219,7 @@ public class Game extends JPanel {
     /**
      * 检查游戏是否结束，若结束：关闭线程池
      */
-    private void checkResultAction(){
+    private void checkResultAction() {
         // 游戏结束检查英雄机是否存活
         if (heroAircraft.getHp() <= 0) {
             timer.cancel(); // 取消定时器并终止所有调度任务
@@ -208,9 +228,9 @@ public class Game extends JPanel {
         }
     };
 
-    //***********************
-    //      Paint 各部分
-    //***********************
+    // ***********************
+    // Paint 各部分
+    // ***********************
     /**
      * 重写 paint方法
      * 通过重复调用paint方法，实现游戏动画
@@ -238,11 +258,16 @@ public class Game extends JPanel {
         g.drawImage(ImageManager.HERO_IMAGE, heroAircraft.getLocationX() - ImageManager.HERO_IMAGE.getWidth() / 2,
                 heroAircraft.getLocationY() - ImageManager.HERO_IMAGE.getHeight() / 2, null);
 
-        //绘制得分和生命值
+        // 绘制得分和生命值
         paintScoreAndLife(g);
 
     }
 
+    /**
+     * 
+     * @param g       画笔
+     * @param objects 列表（元素是AbstractFlyingObject以及它的子类） 所以包括：飞机类，子弹类，道具类
+     */
     private void paintImageWithPositionRevised(Graphics g, List<? extends AbstractFlyingObject> objects) {
         if (objects.isEmpty()) {
             return;

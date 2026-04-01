@@ -32,7 +32,7 @@ public class EliteEnemy extends AbstractAircraft {
         for (int i = 0; i < shootNum; i++) {
             // 子弹发射位置相对飞机位置向前偏移
             // 多个子弹横向分散
-            bullet = new HeroBullet(x , y, speedX, speedY, power);
+            bullet = new HeroBullet(x, y, speedX, speedY, power);
             res.add(bullet);
         }
         return res;

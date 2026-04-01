@@ -1,7 +1,12 @@
 package edu.hitsz.application;
 
 import edu.hitsz.aircraft.*;
+import edu.hitsz.aircraft.factory.AceEnemyFactory;
+import edu.hitsz.aircraft.factory.BossEnemyFactory;
+import edu.hitsz.aircraft.factory.EliteEnemyFactory;
 import edu.hitsz.aircraft.factory.EnemyFactory;
+import edu.hitsz.aircraft.factory.MobEnemyFactory;
+import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.FirePlusSupply;
@@ -38,6 +43,7 @@ public class Game extends JPanel {
     private final List<BaseBullet> enemyBullets;
     private final List<AbstractProp> props;
 
+    private final Map<EnemyType, EnemyFactory> enemyFactories = new EnumMap<>(EnemyType.class);
 
     // 屏幕中出现的敌机最大数量
     private final int enemyMaxNumber = 5;
@@ -68,11 +74,54 @@ public class Game extends JPanel {
         enemyBullets = new LinkedList<>();
         props = new LinkedList<>();
 
+        enemyFactories.put(EnemyType.MOB, new MobEnemyFactory());
+        enemyFactories.put(EnemyType.ELITE, new EliteEnemyFactory());
+        enemyFactories.put(EnemyType.VETERAN, new VeteranEnemyFactory());
+        enemyFactories.put(EnemyType.ACE, new AceEnemyFactory());
+        enemyFactories.put(EnemyType.BOSS, new BossEnemyFactory());
+
         // 启动英雄机鼠标监听
         new HeroController(this, heroAircraft);
 
         this.timer = new Timer("game-action-timer", true);
 
+    }
+
+    // 随机选择敌机类型（可控制概率）
+    private EnemyType getRandomEnemyType() {
+        double rand = Math.random();
+        if (rand < 0.5)
+            return EnemyType.MOB; // 50% 普通
+        if (rand < 0.7)
+            return EnemyType.ELITE; // 20% 精英
+        if (rand < 0.85)
+            return EnemyType.VETERAN; // 15% 精锐
+        return EnemyType.ACE; // 15% 王牌
+    }
+
+    private int getRandomWidth(EnemyType enemyType) {
+        int imageWidth = 0;
+        switch (enemyType) {
+            case MOB:
+                imageWidth = ImageManager.MOB_ENEMY_IMAGE.getWidth();
+                break;
+            case ELITE:
+                imageWidth = ImageManager.ELITE_ENEMY_IMAGE.getWidth();
+                break;
+            case VETERAN:
+                imageWidth = ImageManager.VETERAN_ENEMY_IMAGE.getWidth();
+            case ACE:
+                imageWidth = ImageManager.ACE_ENEMY_IMAGE.getWidth();
+            case BOSS:
+                imageWidth = ImageManager.BOSS_ENEMY_IMAGE.getWidth();
+            default:
+                break;
+        }
+        return (int) (Math.random() * (Main.WINDOW_WIDTH - imageWidth));
+    }
+
+    private int getRandomHeight() {
+        return (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05);
     }
 
     /**
@@ -88,24 +137,9 @@ public class Game extends JPanel {
                 enemySpawnCounter++;
                 if (enemySpawnCounter >= enemySpawnCycle) {
                     enemySpawnCounter = 0;
-                    // 产生普通敌机
-                    if (enemyAircrafts.size() < enemyMaxNumber) {
-                        enemyAircrafts.add(new MobEnemy(
-                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                0,
-                                10,
-                                30));
-                    }
-                    // 产生精英敌机
-                    if (enemyAircrafts.size() < enemyMaxNumber) {
-                        enemyAircrafts.add(new EliteEnemy(
-                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                0,
-                                10,
-                                30));
-                    }
+                    enemyAircrafts.add(
+                            enemyFactories.get(getRandomEnemyType()).createEnemy(getRandomWidth(getRandomEnemyType()),
+                                    getRandomHeight()));
                 }
 
                 // 飞机发射子弹

@@ -6,11 +6,10 @@ import java.util.List;
 import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.EnemyBullet;
-import edu.hitsz.bullet.HeroBullet;
 
 public class VeteranEnemy extends AbstractAircraft {
     // 每次射击发射子弹数量
-    private int shootNum = 1;
+    private int shootNum = 2;
 
     // 子弹威力
     private int power = 5;
@@ -33,7 +32,7 @@ public class VeteranEnemy extends AbstractAircraft {
         for (int i = 0; i < shootNum; i++) {
             // 子弹发射位置相对飞机位置向前偏移
             // 多个子弹横向分散
-            bullet = new EnemyBullet(x, y, speedX, speedY, power);
+            bullet = new EnemyBullet(x + (i * 2 - shootNum + 1) * 10, y, speedX, speedY, power);
             res.add(bullet);
         }
         return res;

@@ -6,6 +6,6 @@ import edu.hitsz.aircraft.AceEnemy;
 public class AceEnemyFactory implements EnemyFactory {
     @Override
     public AbstractAircraft createEnemy(int x, int y) {
-        return new AceEnemy(x, y, 0, 10, 30);
+        return new AceEnemy(x, y, 8, 10, 30);
     }
 }

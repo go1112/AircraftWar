@@ -16,7 +16,7 @@ public class HeroAircraft extends AbstractAircraft {
     private static volatile HeroAircraft instance = null;
 
     // 每次射击发射子弹数量
-    private int shootNum = 10;
+    private int shootNum = 3;
 
     // 子弹威力
     private int power = 30;

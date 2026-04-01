@@ -10,7 +10,7 @@ import edu.hitsz.bullet.HeroBullet;
 
 public class AceEnemy extends AbstractAircraft{
         // 每次射击发射子弹数量
-    private int shootNum = 1;
+    private int shootNum = 3;
 
     // 子弹威力
     private int power = 5;
@@ -32,8 +32,7 @@ public class AceEnemy extends AbstractAircraft{
         BaseBullet bullet;
         for (int i = 0; i < shootNum; i++) {
             // 子弹发射位置相对飞机位置向前偏移
-            // 多个子弹横向分散
-            bullet = new EnemyBullet(x , y, speedX, speedY, power);
+            bullet = new EnemyBullet(x , y, speedX + (2 * i + 1 - shootNum), speedY, power);
             res.add(bullet);
         }
         return res;

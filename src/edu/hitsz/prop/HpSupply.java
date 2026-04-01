@@ -2,9 +2,9 @@ package edu.hitsz.prop;
 
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
-import edu.hitsz.application.Main;
 
 public class HpSupply extends AbstractProp {
+    private int recoverHp = 20; // 恢复的生命值
 
     public HpSupply(int locationX, int locationY, int speedX, int speedY) {
         super(locationX, locationY, speedX, speedY);
@@ -12,8 +12,9 @@ public class HpSupply extends AbstractProp {
 
     @Override
     public void activate(HeroAircraft heroAircraft, Game game) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'activate'");
+        int curHp = heroAircraft.getHp();
+        int maxHp = heroAircraft.getMaxHp();
+        heroAircraft.setHp(Math.min(maxHp, curHp + recoverHp));
     }
 
 

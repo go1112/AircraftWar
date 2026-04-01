@@ -11,8 +11,7 @@ public class FirePlusSupply extends AbstractProp{
 
     @Override
     public void activate(HeroAircraft heroAircraft, Game game) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'activate'");
+        System.out.println("FirePlusSupply active!");
     }
 
 }

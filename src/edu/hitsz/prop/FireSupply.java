@@ -3,7 +3,7 @@ package edu.hitsz.prop;
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
 
-public class FireSupply extends AbstractProp{
+public class FireSupply extends AbstractProp {
 
     public FireSupply(int locationX, int locationY, int speedX, int speedY) {
         super(locationX, locationY, speedX, speedY);
@@ -11,8 +11,7 @@ public class FireSupply extends AbstractProp{
 
     @Override
     public void activate(HeroAircraft heroAircraft, Game game) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'activate'");
+        System.out.println("FireSupply active!");
     }
 
 }

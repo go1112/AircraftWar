@@ -1,7 +1,8 @@
-package edu.hitsz.prop;
+package edu.hitsz.prop.supply;
 
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
+import edu.hitsz.prop.AbstractProp;
 
 public class HpSupply extends AbstractProp {
     private int recoverHp = 20; // 恢复的生命值

@@ -9,9 +9,11 @@ import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.prop.AbstractProp;
-import edu.hitsz.prop.FirePlusSupply;
-import edu.hitsz.prop.FireSupply;
-import edu.hitsz.prop.HpSupply;
+import edu.hitsz.prop.PropFactory;
+import edu.hitsz.prop.PropType;
+import edu.hitsz.prop.supply.FirePlusSupply;
+import edu.hitsz.prop.supply.FireSupply;
+import edu.hitsz.prop.supply.HpSupply;
 import edu.hitsz.basic.AbstractFlyingObject;
 
 import javax.swing.*;
@@ -238,24 +240,7 @@ public class Game extends JPanel {
                     bullet.vanish();
                     if (enemyAircraft.notValid()) {
                         score += 10;
-                        if (enemyAircraft instanceof EliteEnemy && Math.random() < 0.4) {
-                            int propX = enemyAircraft.getLocationX();
-                            int propY = enemyAircraft.getLocationY();
-                            AbstractProp newProp = null;
-
-                            double typeRandom = Math.random();
-                            if (typeRandom < 0.33) {
-                                newProp = new HpSupply(propX, propY, 0, 5);
-                            } else if (typeRandom < 0.66) {
-                                newProp = new FirePlusSupply(propX, propY, 0, 5);
-                            } else {
-                                newProp = new FireSupply(propX, propY, 0, 5);
-                            }
-
-                            if (newProp != null) {
-                                props.add(newProp);
-                            }
-                        }
+                        getProp(enemyAircraft, Math.random());
                     }
                 }
                 // 英雄机 与 敌机 相撞，均损毁
@@ -277,6 +262,53 @@ public class Game extends JPanel {
             }
         }
 
+    }
+
+    private void getProp(AbstractAircraft enemyAircraft, double rand) {
+        int propX = enemyAircraft.getLocationX();
+        int propY = enemyAircraft.getLocationY();
+        AbstractProp newProp = null;
+        double eliteEnemyRand = 1;
+        double veteranEnemyRand = 1;
+        double aceEnemyRand = 1;
+        double typeRandom;
+        if (enemyAircraft instanceof EliteEnemy && rand < eliteEnemyRand) {
+            typeRandom = Math.random();
+            if (typeRandom < 0.33) {
+                newProp = PropFactory.createProp(PropType.HP, propX, propY);
+            } else if (typeRandom < 0.66) {
+                newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
+            } else {
+                newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
+            }
+        } else if (enemyAircraft instanceof VeteranEnemy && rand < veteranEnemyRand) {
+            typeRandom = Math.random();
+            if (typeRandom < 0.3) {
+                newProp = PropFactory.createProp(PropType.HP, propX, propY);
+            } else if (typeRandom < 0.6) {
+                newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
+            } else if (typeRandom < 0.8) {
+                newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
+            } else {
+                newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
+            }
+        } else if (enemyAircraft instanceof AceEnemy && rand < aceEnemyRand) {
+            typeRandom = Math.random();
+            if (typeRandom < 0.3) {
+                newProp = PropFactory.createProp(PropType.HP, propX, propY);
+            } else if (typeRandom < 0.6) {
+                newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
+            } else if (typeRandom < 0.8) {
+                newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
+            } else if (typeRandom < 0.9) {
+                newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
+            } else {
+                newProp = PropFactory.createProp(PropType.FROZEN, propX, propY);
+            }
+        }
+        if (newProp != null) {
+            props.add(newProp);
+        }
     }
 
     /**
@@ -330,7 +362,6 @@ public class Game extends JPanel {
         paintImageWithPositionRevised(g, heroBullets);
         paintImageWithPositionRevised(g, enemyAircrafts);
         paintImageWithPositionRevised(g, props);
-
 
         g.drawImage(ImageManager.HERO_IMAGE, heroAircraft.getLocationX() - ImageManager.HERO_IMAGE.getWidth() / 2,
                 heroAircraft.getLocationY() - ImageManager.HERO_IMAGE.getHeight() / 2, null);

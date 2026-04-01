@@ -8,11 +8,11 @@ import edu.hitsz.aircraft.MobEnemy;
 import edu.hitsz.aircraft.VeteranEnemy;
 import edu.hitsz.bullet.EnemyBullet;
 import edu.hitsz.bullet.HeroBullet;
-import edu.hitsz.prop.BombSupply;
-import edu.hitsz.prop.FirePlusSupply;
-import edu.hitsz.prop.FireSupply;
-import edu.hitsz.prop.FrozenSupply;
-import edu.hitsz.prop.HpSupply;
+import edu.hitsz.prop.supply.BombSupply;
+import edu.hitsz.prop.supply.FirePlusSupply;
+import edu.hitsz.prop.supply.FireSupply;
+import edu.hitsz.prop.supply.FrozenSupply;
+import edu.hitsz.prop.supply.HpSupply;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

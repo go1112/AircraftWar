@@ -1,8 +1,9 @@
-package edu.hitsz.prop;
+package edu.hitsz.prop.supply;
 
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
 import edu.hitsz.application.Main;
+import edu.hitsz.prop.AbstractProp;
 
 public class FrozenSupply extends AbstractProp {
 
@@ -12,8 +13,7 @@ public class FrozenSupply extends AbstractProp {
 
     @Override
     public void activate(HeroAircraft heroAircraft, Game game) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'activate'");
+        System.out.println("冰冻道具");
     }
 
 

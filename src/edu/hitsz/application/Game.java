@@ -9,6 +9,7 @@ import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.prop.AbstractProp;
+import edu.hitsz.prop.GetProp;
 import edu.hitsz.prop.PropFactory;
 import edu.hitsz.prop.PropType;
 import edu.hitsz.prop.supply.FirePlusSupply;
@@ -68,7 +69,8 @@ public class Game extends JPanel {
     private boolean bossSpawned = false;
     // Boss机产生的分数阈值器
     private int scoreThreshold = 100;
-    // Boss机出现的次数
+    // Boss机
+    private AbstractAircraft bossEnemy = null;
 
     public Game() {
         // 由于采用单例模式 所以用getInstance方法来获取对象
@@ -132,6 +134,16 @@ public class Game extends JPanel {
         return (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05);
     }
 
+    private boolean shouldSpawnBoss() {
+        return !bossSpawned && score >= scoreThreshold && (bossEnemy == null || bossEnemy.notValid());
+    }
+
+    private void spawnBossEnemy() {
+        bossEnemy = new BossEnemyFactory().createEnemy(getRandomWidth(EnemyType.BOSS), 0);
+        enemyAircrafts.add(bossEnemy);
+        bossSpawned = true;
+    }
+
     /**
      * 游戏启动入口，执行游戏逻辑
      */
@@ -150,9 +162,8 @@ public class Game extends JPanel {
                                     getRandomHeight()));
                 }
 
-                if (score >= scoreThreshold && bossSpawned == false) {
-                    enemyAircrafts.add(new BossEnemyFactory().createEnemy(getRandomWidth(EnemyType.BOSS), 0));
-                    bossSpawned = true;
+                if (shouldSpawnBoss()) {
+                    spawnBossEnemy();
                 }
 
                 // 飞机发射子弹
@@ -252,8 +263,7 @@ public class Game extends JPanel {
                     enemyAircraft.decreaseHp(bullet.getPower());
                     bullet.vanish();
                     if (enemyAircraft.notValid()) {
-                        score += 10;
-                        getProp(enemyAircraft, Math.random());
+                        triggerReward(enemyAircraft);
                     }
                 }
                 // 英雄机 与 敌机 相撞，均损毁
@@ -264,7 +274,7 @@ public class Game extends JPanel {
             }
         }
 
-        // Todo: 我方获得道具，道具生效
+        // 我方获得道具，道具生效
         for (AbstractProp prop : props) {
             if (prop.notValid()) {
                 continue;
@@ -277,67 +287,34 @@ public class Game extends JPanel {
 
     }
 
-    private void getProp(AbstractAircraft enemyAircraft, double rand) {
-        int propX = enemyAircraft.getLocationX();
-        int propY = enemyAircraft.getLocationY();
-        AbstractProp newProp = null;
-        double eliteEnemyRand = 1;
-        double veteranEnemyRand = 1;
-        double aceEnemyRand = 1;
-        double typeRandom;
-        if (enemyAircraft instanceof EliteEnemy && rand < eliteEnemyRand) {
-            typeRandom = Math.random();
-            if (typeRandom < 0.33) {
-                newProp = PropFactory.createProp(PropType.HP, propX, propY);
-            } else if (typeRandom < 0.66) {
-                newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
-            } else {
-                newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
-            }
-        } else if (enemyAircraft instanceof VeteranEnemy && rand < veteranEnemyRand) {
-            typeRandom = Math.random();
-            if (typeRandom < 0.3) {
-                newProp = PropFactory.createProp(PropType.HP, propX, propY);
-            } else if (typeRandom < 0.6) {
-                newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
-            } else if (typeRandom < 0.8) {
-                newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
-            } else {
-                newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
-            }
-        } else if (enemyAircraft instanceof AceEnemy && rand < aceEnemyRand) {
-            typeRandom = Math.random();
-            if (typeRandom < 0.3) {
-                newProp = PropFactory.createProp(PropType.HP, propX, propY);
-            } else if (typeRandom < 0.6) {
-                newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
-            } else if (typeRandom < 0.8) {
-                newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
-            } else if (typeRandom < 0.9) {
-                newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
-            } else {
-                newProp = PropFactory.createProp(PropType.FROZEN, propX, propY);
+    private void triggerReward(AbstractAircraft enemyAircraft) {
+        if (enemyAircraft instanceof MobEnemy) {
+            score += 10;
+        } else if (enemyAircraft instanceof EliteEnemy) {
+            score += 20;
+        } else if (enemyAircraft instanceof VeteranEnemy) {
+            score += 30;
+        } else if (enemyAircraft instanceof AceEnemy) {
+            score += 50;
+        } else {
+            score += 100;
+        }
+
+        if (!(enemyAircraft instanceof BossEnemy)) {
+            AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, Math.random());
+            if (newProp != null) {
+                props.add(newProp);
             }
         } else {
             for (int i = 0; i < 3; i++) {
-                typeRandom = Math.random();
-                if (typeRandom < 0.3) {
-                    newProp = PropFactory.createProp(PropType.HP, propX, propY);
-                } else if (typeRandom < 0.6) {
-                    newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
-                } else if (typeRandom < 0.8) {
-                    newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
-                } else if (typeRandom < 0.9) {
-                    newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
-                } else {
-                    newProp = PropFactory.createProp(PropType.FROZEN, propX, propY);
+                AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, Math.random());
+                if (newProp != null) {
+                    props.add(newProp);
                 }
             }
         }
-        if (newProp != null) {
-            props.add(newProp);
-        }
     }
+
 
     /**
      * 后处理：

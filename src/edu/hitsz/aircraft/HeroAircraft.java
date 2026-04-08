@@ -2,6 +2,7 @@ package edu.hitsz.aircraft;
 
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.HeroBullet;
+import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.shoot.ShootStrategy;
 import edu.hitsz.shoot.StraightShoot;
 
@@ -101,6 +102,11 @@ public class HeroAircraft extends AbstractAircraft {
         this.shootNum = 8;
         this.power = 50;
         System.out.println("火力加强模式激活，持续" + durationSeconds + "秒");
+    }
+
+    @Override
+    public AbstractProp obtainProp(AbstractAircraft enemyAircraft, double rand) {
+        return null;
     }
 
     // @Override

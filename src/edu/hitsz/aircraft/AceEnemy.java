@@ -7,9 +7,13 @@ import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.EnemyBullet;
 import edu.hitsz.bullet.HeroBullet;
+import edu.hitsz.prop.AbstractProp;
+import edu.hitsz.prop.PropFactory;
+import edu.hitsz.prop.PropType;
+import edu.hitsz.prop.GetProp;
 
-public class AceEnemy extends AbstractAircraft{
-        // 每次射击发射子弹数量
+public class AceEnemy extends AbstractAircraft {
+    // 每次射击发射子弹数量
     private int shootNum = 3;
 
     // // 子弹威力
@@ -26,18 +30,19 @@ public class AceEnemy extends AbstractAircraft{
 
     // @Override
     // public List<BaseBullet> shoot() {
-    //     List<BaseBullet> res = new LinkedList<>();
-    //     int x = this.getLocationX();
-    //     int y = this.getLocationY() + direction * 2;
-    //     int speedX = 0;
-    //     int speedY = this.getSpeedY() + direction * 5;
-    //     BaseBullet bullet;
-    //     for (int i = 0; i < shootNum; i++) {
-    //         // 子弹发射位置相对飞机位置向前偏移
-    //         bullet = new EnemyBullet(x , y, speedX + (2 * i + 1 - shootNum), speedY, power);
-    //         res.add(bullet);
-    //     }
-    //     return res;
+    // List<BaseBullet> res = new LinkedList<>();
+    // int x = this.getLocationX();
+    // int y = this.getLocationY() + direction * 2;
+    // int speedX = 0;
+    // int speedY = this.getSpeedY() + direction * 5;
+    // BaseBullet bullet;
+    // for (int i = 0; i < shootNum; i++) {
+    // // 子弹发射位置相对飞机位置向前偏移
+    // bullet = new EnemyBullet(x , y, speedX + (2 * i + 1 - shootNum), speedY,
+    // power);
+    // res.add(bullet);
+    // }
+    // return res;
     // }
 
     @Override
@@ -47,6 +52,30 @@ public class AceEnemy extends AbstractAircraft{
         if (locationY >= Main.WINDOW_HEIGHT) {
             vanish();
         }
+    }
+
+    @Override
+    public AbstractProp obtainProp(AbstractAircraft enemyAircraft, double rand) {
+        int propX = enemyAircraft.getLocationX();
+        int propY = enemyAircraft.getLocationY();
+        AbstractProp newProp = null;
+        double aceEnemyRand = 1;
+        double typeRandom = Math.random();
+        if (rand > aceEnemyRand) {
+            return null;
+        }
+        if (typeRandom < 0.3) {
+            newProp = PropFactory.createProp(PropType.HP, propX, propY);
+        } else if (typeRandom < 0.6) {
+            newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
+        } else if (typeRandom < 0.8) {
+            newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
+        } else if (typeRandom < 0.9) {
+            newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
+        } else {
+            newProp = PropFactory.createProp(PropType.FROZEN, propX, propY);
+        }
+        return newProp;
     }
 
 }

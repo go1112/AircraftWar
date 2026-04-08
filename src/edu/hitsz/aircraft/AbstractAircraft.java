@@ -1,6 +1,7 @@
 package edu.hitsz.aircraft;
 
 import edu.hitsz.bullet.BaseBullet;
+import edu.hitsz.prop.GetProp;
 import edu.hitsz.shoot.ShootStrategy;
 import edu.hitsz.basic.AbstractFlyingObject;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * 
  * @author hitsz
  */
-public abstract class AbstractAircraft extends AbstractFlyingObject {
+public abstract class AbstractAircraft extends AbstractFlyingObject implements GetProp{
 
     // 最大生命值
     protected int maxHp;

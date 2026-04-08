@@ -166,8 +166,6 @@ public class Game extends JPanel {
                 aircraftsMoveAction();
                 // 道具移动
                 propMoveAction();
-                // 道具持续时间
-                heroAircraft.updateEffect();
                 // 撞击检测
                 crashCheckAction();
                 // 后处理

@@ -9,12 +9,6 @@ import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.prop.AbstractProp;
-import edu.hitsz.prop.GetProp;
-import edu.hitsz.prop.PropFactory;
-import edu.hitsz.prop.PropType;
-import edu.hitsz.prop.supply.FirePlusSupply;
-import edu.hitsz.prop.supply.FireSupply;
-import edu.hitsz.prop.supply.HpSupply;
 import edu.hitsz.basic.AbstractFlyingObject;
 
 import javax.swing.*;
@@ -23,8 +17,6 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.util.concurrent.*;
-import java.util.function.Predicate;
 
 /**
  * 游戏主面板，游戏启动

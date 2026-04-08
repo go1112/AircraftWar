@@ -312,6 +312,10 @@ public class Game extends JPanel {
                     props.add(newProp);
                 }
             }
+
+            scoreThreshold = (int)(score * 1.1);
+            bossSpawned = false;
+            System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
         }
     }
 

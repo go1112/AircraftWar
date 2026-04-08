@@ -64,12 +64,18 @@ public class Game extends JPanel {
     // 游戏结束标志
     private boolean gameOverFlag = false;
 
+    // Boss机产生标志
+    private boolean bossSpawned = false;
+    // Boss机产生的分数阈值器
+    private int scoreThreshold = 100;
+    // Boss机出现的次数
+
     public Game() {
         // 由于采用单例模式 所以用getInstance方法来获取对象
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
-                0, 0, 100);
+                0, 0, 3000);
 
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
@@ -142,6 +148,11 @@ public class Game extends JPanel {
                     enemyAircrafts.add(
                             enemyFactories.get(getRandomEnemyType()).createEnemy(getRandomWidth(getRandomEnemyType()),
                                     getRandomHeight()));
+                }
+
+                if (score >= scoreThreshold && bossSpawned == false) {
+                    enemyAircrafts.add(new BossEnemyFactory().createEnemy(getRandomWidth(EnemyType.BOSS), 0));
+                    bossSpawned = true;
                 }
 
                 // 飞机发射子弹
@@ -306,6 +317,21 @@ public class Game extends JPanel {
                 newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
             } else {
                 newProp = PropFactory.createProp(PropType.FROZEN, propX, propY);
+            }
+        } else {
+            for (int i = 0; i < 3; i++) {
+                typeRandom = Math.random();
+                if (typeRandom < 0.3) {
+                    newProp = PropFactory.createProp(PropType.HP, propX, propY);
+                } else if (typeRandom < 0.6) {
+                    newProp = PropFactory.createProp(PropType.FIRE, propX, propY);
+                } else if (typeRandom < 0.8) {
+                    newProp = PropFactory.createProp(PropType.FIRE_PLUS, propX, propY);
+                } else if (typeRandom < 0.9) {
+                    newProp = PropFactory.createProp(PropType.BOMB, propX, propY);
+                } else {
+                    newProp = PropFactory.createProp(PropType.FROZEN, propX, propY);
+                }
             }
         }
         if (newProp != null) {

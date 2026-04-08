@@ -6,7 +6,7 @@ left to right direction
 
 ' 1. 简单工厂类
 class PropFactory {
-  +{static} createProp(type: PropType, x: int, y: int): AbstractProp
+  +{static} createProp(PropType type, int x, int y): AbstractProp
   --
   根据type参数创建对应的具体道具对象
   内部包含switch-case或if-else逻辑
@@ -14,43 +14,43 @@ class PropFactory {
 
 ' 2. 抽象产品类
 class AbstractProp <<abstract>> {
-  +{abstract} activate(heroAircraft: HeroAircraft, game: Game): void
+  +AbstractProp(int locationX, int locationY, int speedX, int speedY) 
+  +{abstract} activate(HeroAircraft heroAircraft, Game game): void
   +forward(): void
-  ' ... 其他公共方法
 }
 
 ' 3. 具体产品类
 class HpSupply {
   -recoverHp: int = 20
-  +activate(heroAircraft: HeroAircraft, game: Game): void
+  +activate(HeroAircraft heroAircraft, Game game): void
   +forward(): void
   --
   加血道具
 }
 
 class FireSupply {
-  +activate(heroAircraft: HeroAircraft, game: Game): void
+  +activate(HeroAircraft heroAircraft, Game game): void
   +forward(): void
   --
   火力道具
 }
 
 class FirePlusSupply {
-  +activate(heroAircraft: HeroAircraft, game: Game): void
+  +activate(HeroAircraft heroAircraft, Game game): void
   +forward(): void
   --
   超级火力道具
 }
 
 class BombSupply {
-  +activate(heroAircraft: HeroAircraft, game: Game): void
+  +activate(HeroAircraft heroAircraft, Game game): void
   +forward(): void
   --
   炸弹道具
 }
 
 class FrozenSupply {
-  +activate(heroAircraft: HeroAircraft, game: Game): void
+  +activate(HeroAircraft heroAircraft, Game game): void
   +forward(): void
   --
   冰冻道具

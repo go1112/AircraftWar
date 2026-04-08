@@ -1,4 +1,7 @@
 @startuml
+skinparam classAttributeIconSize 0
+skinparam Style strictuml
+left to right direction
 ' 单例模式在HeroAircraft中的应用
 class HeroAircraft{
     - instance:HeroAircraft

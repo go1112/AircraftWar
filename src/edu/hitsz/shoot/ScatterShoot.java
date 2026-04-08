@@ -17,7 +17,7 @@ public class ScatterShoot implements ShootStrategy {
                 List<BaseBullet> res = new LinkedList<>();
         // 散射参数
         int bulletNum = 3; // 子弹数量
-        int spreadAngle = 15; // 散射角度
+        int spreadAngle = 5; // 散射角度
         int baseSpeedY = speedY + direction * 5; // 基础垂直速度
 
         for (int i = 0; i < bulletNum; i++) {

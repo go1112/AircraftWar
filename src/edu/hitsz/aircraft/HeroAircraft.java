@@ -2,6 +2,8 @@ package edu.hitsz.aircraft;
 
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.HeroBullet;
+import edu.hitsz.shoot.ShootStrategy;
+import edu.hitsz.shoot.StraightShoot;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,11 +20,11 @@ public class HeroAircraft extends AbstractAircraft {
     // 每次射击发射子弹数量
     private int shootNum = 3;
 
-    // 子弹威力
-    private int power = 30;
+    // // 子弹威力
+    // private int power = 30;
 
-    // 子弹射击方向 (向上发射：-1，向下发射：1)
-    private int direction = -1;
+    // // 子弹射击方向 (向上发射：-1，向下发射：1)
+    // private int direction = -1;
 
     public enum shootMode {
         NORMAL, // 普通模式
@@ -36,6 +38,10 @@ public class HeroAircraft extends AbstractAircraft {
     // 构造器私有化 把构造权掌握在自己手中
     private HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
+        this.power = 30;
+        this.direction = -1;
+
+        this.setShootStrategy(new StraightShoot(shootNum));
     }
 
     // 提供全局访问点 双重锁定检查
@@ -97,25 +103,25 @@ public class HeroAircraft extends AbstractAircraft {
         System.out.println("火力加强模式激活，持续" + durationSeconds + "秒");
     }
 
-    @Override
-    /**
-     * 通过射击产生子弹
-     * 
-     * @return 射击出的子弹List
-     */
-    public List<BaseBullet> shoot() {
-        List<BaseBullet> res = new LinkedList<>();
-        int x = this.getLocationX();
-        int y = this.getLocationY() + direction * 2;
-        int speedX = 0;
-        int speedY = this.getSpeedY() + direction * 5;
-        BaseBullet bullet;
-        for (int i = 0; i < shootNum; i++) {
-            // 子弹发射位置相对飞机位置向前偏移
-            // 多个子弹横向分散
-            bullet = new HeroBullet(x + (i * 2 - shootNum + 1) * 10, y, speedX, speedY, power);
-            res.add(bullet);
-        }
-        return res;
-    }
+    // @Override
+    // /**
+    //  * 通过射击产生子弹
+    //  * 
+    //  * @return 射击出的子弹List
+    //  */
+    // public List<BaseBullet> shoot() {
+    //     List<BaseBullet> res = new LinkedList<>();
+    //     int x = this.getLocationX();
+    //     int y = this.getLocationY() + direction * 2;
+    //     int speedX = 0;
+    //     int speedY = this.getSpeedY() + direction * 5;
+    //     BaseBullet bullet;
+    //     for (int i = 0; i < shootNum; i++) {
+    //         // 子弹发射位置相对飞机位置向前偏移
+    //         // 多个子弹横向分散
+    //         bullet = new HeroBullet(x + (i * 2 - shootNum + 1) * 10, y, speedX, speedY, power);
+    //         res.add(bullet);
+    //     }
+    //     return res;
+    // }
 }

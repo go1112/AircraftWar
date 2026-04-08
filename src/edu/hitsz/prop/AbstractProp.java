@@ -1,7 +1,7 @@
 package edu.hitsz.prop;
 
 import edu.hitsz.aircraft.HeroAircraft;
-import edu.hitsz.application.Game;
+import edu.hitsz.application.Game; 
 import edu.hitsz.application.Main;
 import edu.hitsz.basic.AbstractFlyingObject;
 

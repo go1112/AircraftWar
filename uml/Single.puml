@@ -1,0 +1,11 @@
+@startuml
+' 单例模式在HeroAircraft中的应用
+class HeroAircraft{
+    - instance:HeroAircraft
+    - HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp) 
+    + {static} getInstance():HeroAircraft
+    + {static} getInstance(int locationX, int locationY, int speedX, int speedY, int hp):HeroAircraft
+   }
+heroAircraft --> HeroAircraft : 调用 getInstance()
+
+@enduml

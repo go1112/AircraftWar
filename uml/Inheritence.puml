@@ -27,13 +27,13 @@ abstract class AbstractFlyingObject
 }
 abstract class AbstractAircraft
 {
-	# maxHp:int
+    # maxHp:int
     # hp:int
     + AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
     + decreaseHp(int decrease):void
     + getHp():int
     + {abstract} shoot():List<BaseBullet>
- }
+}
 
 
 class HeroAircraft {
@@ -54,28 +54,90 @@ class MobEnemy {
 }
 AbstractAircraft <|-- MobEnemy
 
+class EliteEnemy{
+    + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+}
+AbstractAircraft <|-- EliteEnemy
+
+class VeteranEnemy{
+    + VeteranEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+}
+
+AbstractAircraft <|-- VeteranEnemy
+
+class AceEnemy{
+    + AceEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+}
+
+AbstractAircraft <|-- AceEnemy
+
+class BossEnemy{
+    + BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+}
+
+AbstractAircraft <|-- BossEnemy
+
 abstract class BaseBullet
 {
     - power:int
     + BaseBullet(int locationX, int locationY, int speedX, int speedY, int power)
     + forward():void
-	+ getPower():int
+    + getPower():int
 }
 
 class HeroBullet {
     + HeroBullet(int locationX, int locationY,
-     int speedX, int speedY, int power)
+    int speedX, int speedY, int power)
 }
 
 class EnemyBullet {
     + EnemyBullet(int locationX, int locationY,
-     int speedX, int speedY, int power)
+    int speedX, int speedY, int power)
 }
 
 BaseBullet <|-- HeroBullet
 BaseBullet <|-- EnemyBullet
 
+
+class AbstractProp{
+    + AbstractProp(int locationX, int locationY, int speedX, int speedY)
+    + forward():void
+    + {abstract} activate(HeroAircraft heroAircraft, Game game):void
+
+}
+
+class BombSupply{
+
+}
+AbstractProp <|-- BombSupply
+
+class FirePlusSupply{
+
+}
+AbstractProp <|-- FirePlusSupply
+
+class FireSupply{
+
+}
+AbstractProp <|-- FireSupply
+
+class FrozenSupply{
+
+}
+AbstractProp <|-- FrozenSupply
+
+class HpSupply{
+
+}
+AbstractProp <|-- HpSupply
+
+
 AbstractFlyingObject <|-- AbstractAircraft
 AbstractFlyingObject <|-- BaseBullet
+AbstractFlyingObject <|-- AbstractProp
 
 @enduml

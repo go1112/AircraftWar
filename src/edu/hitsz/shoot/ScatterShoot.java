@@ -11,13 +11,17 @@ import edu.hitsz.bullet.HeroBullet;
  * 散射模式
  */
 public class ScatterShoot implements ShootStrategy {
+    private int bulletNum = 3; // 子弹数量
+    
+    public ScatterShoot(int bulletNum) {
+        this.bulletNum = bulletNum;
+    }
 
     @Override
     public List<BaseBullet> shoot(int shooterX, int shooterY, int speedY, int direction, int power) {
                 List<BaseBullet> res = new LinkedList<>();
         // 散射参数
-        int bulletNum = 3; // 子弹数量
-        int spreadAngle = 5; // 散射角度
+        int spreadAngle = 2; // 散射角度
         int baseSpeedY = speedY + direction * 5; // 基础垂直速度
 
         for (int i = 0; i < bulletNum; i++) {

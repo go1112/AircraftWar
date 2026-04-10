@@ -65,7 +65,7 @@ public class Game extends JPanel {
     private AbstractAircraft bossEnemy = null;
 
     public Game() {
-        // 由于采用单例模式 所以用getInstance方法来获取对象
+        // 使用单例模式对heroAircraft初始化
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
@@ -324,7 +324,6 @@ public class Game extends JPanel {
         heroBullets.removeIf(AbstractFlyingObject::notValid);
         enemyAircrafts.removeIf(AbstractFlyingObject::notValid);
         props.removeIf(AbstractFlyingObject::notValid);
-        // Todo: 删除无效道具
     }
 
     /**

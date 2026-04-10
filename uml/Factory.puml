@@ -1,4 +1,4 @@
-@startuml
+@startuml "工厂方法模式：飞机大战敌机创建场景"
 title 工厂方法模式：飞机大战敌机创建场景
 left to right direction
 
@@ -59,7 +59,7 @@ class BossEnemy {
 }
 
 ' 3. 抽象创建者接口
-interface EnemyFactory <<interface>> {
+interface EnemyFactory {
   +{abstract} createEnemy(int x, int y): AbstractAircraft
 }
 

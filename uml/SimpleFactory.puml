@@ -1,4 +1,4 @@
-@startuml
+@startuml "简单工厂模式：飞机大战道具创建"
 title 简单工厂模式：飞机大战道具创建
 left to right direction
 

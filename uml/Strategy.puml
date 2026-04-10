@@ -1,9 +1,9 @@
-@startuml
+@startuml "飞机大战弹道系统 - 策略模式实现"
 title 飞机大战弹道系统 - 策略模式实现
 left to right direction
 
 ' 1. 策略接口
-interface ShootStrategy <<interface>> {
+interface ShootStrategy {
   +{abstract} shoot(int shooterX, int shooterY,int speedY ,int direction, int power): List<BaseBullet>
 } 
 

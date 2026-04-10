@@ -1,4 +1,4 @@
-@startuml
+@startuml "飞机大战英雄机单例模式结构图"
 title 飞机大战英雄机单例模式结构图
 left to right direction
 

@@ -1,7 +1,5 @@
 @startuml
 title 飞机大战弹道系统 - 策略模式实现
-skinparam classAttributeIconSize 0
-skinparam Style strictuml
 left to right direction
 
 ' 1. 策略接口

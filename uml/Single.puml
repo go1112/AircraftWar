@@ -1,7 +1,5 @@
 @startuml
 title 飞机大战英雄机单例模式结构图
-skinparam classAttributeIconSize 0
-skinparam Style strictuml
 left to right direction
 
 ' 单例模式在HeroAircraft中的应用

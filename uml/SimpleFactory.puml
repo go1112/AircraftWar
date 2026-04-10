@@ -1,7 +1,5 @@
 @startuml
 title 简单工厂模式：飞机大战道具创建
-skinparam classAttributeIconSize 0
-skinparam Style strictuml
 left to right direction
 
 ' 1. 简单工厂类
@@ -13,7 +11,7 @@ class PropFactory {
 }
 
 ' 2. 抽象产品类
-class AbstractProp <<abstract>> {
+abstract class AbstractProp {
   +AbstractProp(int locationX, int locationY, int speedX, int speedY) 
   +{abstract} activate(HeroAircraft heroAircraft, Game game): void
   +forward(): void

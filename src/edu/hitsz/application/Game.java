@@ -145,14 +145,7 @@ public class Game extends JPanel {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-
-                enemySpawnCounter++;
-                if (enemySpawnCounter >= enemySpawnCycle) {
-                    enemySpawnCounter = 0;
-                    enemyAircrafts.add(
-                            enemyFactories.get(getRandomEnemyType()).createEnemy(getRandomWidth(getRandomEnemyType()),
-                                    getRandomHeight()));
-                }
+                createRandomEnemy();
 
                 if (shouldSpawnBoss()) {
                     spawnBossEnemy();
@@ -178,6 +171,17 @@ public class Game extends JPanel {
         };
         // 以固定延迟时间进行执行：本次任务执行完成后，延迟 timeInterval 再执行下一次
         timer.schedule(task, 0, timeInterval);
+
+    }
+
+    private void createRandomEnemy() {
+        enemySpawnCounter++;
+        if (enemySpawnCounter >= enemySpawnCycle) {
+            enemySpawnCounter = 0;
+            enemyAircrafts.add(
+                    enemyFactories.get(getRandomEnemyType()).createEnemy(getRandomWidth(getRandomEnemyType()),
+                            getRandomHeight()));
+        }
 
     }
 
@@ -303,12 +307,11 @@ public class Game extends JPanel {
                 }
             }
 
-            scoreThreshold = (int)(score * 1.1);
+            scoreThreshold = (int) (score * 1.1);
             bossSpawned = false;
             System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
         }
     }
-
 
     /**
      * 后处理：

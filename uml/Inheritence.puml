@@ -1,5 +1,6 @@
 @startuml
 'https://plantuml.com/class-diagram
+title 飞机大战飞行类继承关系
 skinparam classAttributeIconSize 0
 skinparam Style strictuml
 left to right direction

@@ -4,16 +4,26 @@ import java.util.List;
 
 public interface PlayRecordDao {
     /**
-     * 查找所有玩家的得分记录
+     * * *********************
+     * * 删除部分
+     * * *********************
      */
-    List<PlayRecord> getAllScores();
 
     /**
      * 根据玩家名删除对应的所有玩家记录
-     * 
-     * @return 返回true表示删除成功 false表示删除失败
      */
-    boolean deleteAllRecords(String playerName);
+    void deleteAllRecords(String playerName);
+
+    /**
+     * * *********************
+     * * 查找部分
+     * * *********************
+     */
+
+    /**
+     * 查找所有玩家的得分记录
+     */
+    List<PlayRecord> getAllScores();
 
     /**
      * 根据玩家名得到该玩家所有的玩家记录
@@ -26,6 +36,28 @@ public interface PlayRecordDao {
     List<PlayRecord> getAllPlayRecords(Difficulty difficulty);
 
     /**
+     * * *********************
+     * * 添加部分
+     * * *********************
+     */
+
+    /**
+     * 添加一个游戏记录
+     */
+    void addRecord(PlayRecord record);
+
+    /**
+     * * *********************
+     * * 修改部分
+     * * *********************
+     */
+
+    /**
+     * * *********************
+     * * 文件操作部分
+     * * *********************
+     */
+    /**
      * 从文件中读取数据
      */
     void readFromFile();
@@ -33,5 +65,5 @@ public interface PlayRecordDao {
     /**
      * 将数据写入文件中
      */
-    void writeToFile();
+    void writeToFile(Difficulty difficulty);
 }

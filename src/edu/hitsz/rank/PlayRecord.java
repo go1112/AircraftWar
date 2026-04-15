@@ -75,7 +75,11 @@ public class PlayRecord implements Comparable<PlayRecord> {
      */
     @Override
     public int compareTo(PlayRecord o) {
-        return this.score - o.score;
+        int scoreCompare = o.score - this.score;
+        if (scoreCompare != 0) {
+            return scoreCompare;
+        }
+        return o.dateTime.compareTo(this.dateTime);
     }
 
     /**
@@ -87,7 +91,7 @@ public class PlayRecord implements Comparable<PlayRecord> {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm");
-        return String.format("玩家名：%s\t玩家分数：%d\t游戏时间：%s", name, score, dateTime.format(formatter));
+        return String.format("%-10s\t%10d\t%-10s", name, score, dateTime.format(formatter));
     }
 
 }

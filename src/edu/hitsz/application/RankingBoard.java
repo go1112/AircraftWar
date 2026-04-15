@@ -1,0 +1,52 @@
+package edu.hitsz.application;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import edu.hitsz.rank.Difficulty;
+import edu.hitsz.rank.PlayRecord;
+import edu.hitsz.rank.PlayRecordDao;
+
+public class RankingBoard {
+    private final PlayRecordDao recordDao;
+
+    public RankingBoard(PlayRecordDao recordDao) {
+        this.recordDao = recordDao;
+    }
+
+    /**
+     * 在控制台展示指定难度的排行榜
+     * 
+     * @param difficulty 游戏难度
+     */
+    public void showRanking(Difficulty difficulty) {
+        List<PlayRecord> records = recordDao.getAllPlayRecords(difficulty);
+
+        System.out.println("-----------------------------------------");
+        System.out.println("        排行榜（" + difficulty + "）        ");
+        System.out.println("-----------------------------------------");
+        System.out.println("玩家名\t分数\t游戏时间");
+
+        for (int i = 0; i < records.size(); i++) {
+            System.out.println(records.get(i));
+        }
+
+        if (records.isEmpty()) {
+            System.out.println("暂无记录");
+        }
+        System.out.println("-----------------------------------------");
+    }
+
+    /**
+     * 添加当前玩家游戏记录
+     */
+    public void addCurRecord(String playerName, int score, Difficulty difficulty) {
+        // 创建-》加入内存中的列表-》写入文件
+        PlayRecord newPlayRecord = new PlayRecord(score, playerName, LocalDateTime.now(), difficulty);
+
+        recordDao.addRecord(newPlayRecord);
+
+        recordDao.writeToFile(difficulty);
+        System.out.println("记录已保存: " + newPlayRecord);
+    }
+}

@@ -1,0 +1,93 @@
+package edu.hitsz.rank;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class PlayRecord implements Comparable<PlayRecord> {
+
+    private int score; // 玩家分数
+    private String name; // 玩家名
+    private int rank; // 名次
+    private LocalDateTime dateTime; // 记录时间
+    private Difficulty difficulty; // 难度
+
+    /**
+     * * *********************
+     * * 构造器部分
+     * * *********************
+     */
+    public PlayRecord(int score, String name, LocalDateTime dateTime, Difficulty difficulty) {
+        this.score = score;
+        this.name = name;
+        this.dateTime = dateTime;
+        this.difficulty = difficulty;
+    }
+
+    /**
+     * * *********************
+     * * Getter和Setter部分
+     * * *********************
+     */
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public Difficulty getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    /**
+     * * *********************
+     * * 比较器部分
+     * * *********************
+     */
+    @Override
+    public int compareTo(PlayRecord o) {
+        return this.score - o.score;
+    }
+
+    /**
+     * * *********************
+     * * toString部分
+     * * *********************
+     */
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm");
+        return String.format("玩家名：%s\t玩家分数：%d\t游戏时间：%s", name, score, dateTime.format(formatter));
+    }
+
+}

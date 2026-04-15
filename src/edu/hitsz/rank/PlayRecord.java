@@ -1,9 +1,10 @@
 package edu.hitsz.rank;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class PlayRecord implements Comparable<PlayRecord> {
+public class PlayRecord implements Comparable<PlayRecord>,Serializable {
 
     private int score; // 玩家分数
     private String name; // 玩家名
@@ -98,7 +99,7 @@ public class PlayRecord implements Comparable<PlayRecord> {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd HH:mm");
-        return String.format("%-10s\t%10d\t%-10s", name, score, dateTime.format(formatter));
+        return String.format("%-10s\t%-10d\t%-10s", name, score, dateTime.format(formatter));
     }
 
 }

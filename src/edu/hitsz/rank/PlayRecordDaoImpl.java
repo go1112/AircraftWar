@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +15,7 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
     private List<PlayRecord> records;
 
     public PlayRecordDaoImpl(List<PlayRecord> records) {
-        this.records = new ArrayList<>();
+        this.records = records;
     }
 
     @Override
@@ -58,6 +57,7 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
 
     @Override
     @SuppressWarnings("all")
+    // ! 必须保障对象是可序列化的 —— implements Serializable
     public void readFromFile(Difficulty difficulty) {
         // 生成目标文件名
         String fileName = getFileNameByDifficulty(difficulty);
@@ -94,6 +94,7 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
     }
 
     @Override
+    // ! 必须保障对象是可序列化的 —— implements Serializable
     public void writeToFile(Difficulty difficulty) {
         // 生成目标文件名
         String fileName = getFileNameByDifficulty(difficulty);

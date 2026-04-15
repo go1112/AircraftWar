@@ -9,6 +9,9 @@ import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.prop.AbstractProp;
+import edu.hitsz.rank.Difficulty;
+import edu.hitsz.rank.PlayRecordDao;
+import edu.hitsz.rank.PlayRecordDaoImpl;
 import edu.hitsz.basic.AbstractFlyingObject;
 
 import javax.swing.*;
@@ -51,7 +54,8 @@ public class Game extends JPanel {
     protected double shootCycle = 20;
     private int shootCounter = 0;
 
-    // 当前玩家分数
+    // 当前玩家信息
+    private String playName;
     private int score = 0;
 
     // 游戏结束标志
@@ -63,6 +67,10 @@ public class Game extends JPanel {
     private int scoreThreshold = 100;
     // Boss机
     private AbstractAircraft bossEnemy = null;
+
+    // 排行榜功能类
+    PlayRecordDao playRecordDao = new PlayRecordDaoImpl(new ArrayList<>());
+    RankingBoard rankingBoard = new RankingBoard(playRecordDao);
 
     public Game() {
         // 使用单例模式对heroAircraft初始化
@@ -335,6 +343,13 @@ public class Game extends JPanel {
             timer.cancel(); // 取消定时器并终止所有调度任务
             gameOverFlag = true;
             System.out.println("Game Over!");
+            System.out.print("请输入玩家名：");
+            Scanner scanner = new Scanner(System.in);
+            playName = scanner.next();
+            rankingBoard.addCurRecord(playName, score, Difficulty.BEGINNER);
+            rankingBoard.showRanking(Difficulty.BEGINNER);
+            rankingBoard.writeRecordToFile();
+            scanner.close();
         }
     };
 

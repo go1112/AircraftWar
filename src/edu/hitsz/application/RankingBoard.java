@@ -25,7 +25,7 @@ public class RankingBoard {
         System.out.println("-----------------------------------------");
         System.out.println("        排行榜（" + difficulty + "）        ");
         System.out.println("-----------------------------------------");
-        System.out.println("玩家名\t分数\t游戏时间");
+        System.out.println("玩家名         分数              游戏时间");
 
         for (int i = 0; i < records.size(); i++) {
             System.out.println(records.get(i));

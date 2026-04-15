@@ -60,7 +60,7 @@ public interface PlayRecordDao {
     /**
      * 从文件中读取数据
      */
-    void readFromFile();
+    void readFromFile(Difficulty difficulty);
 
     /**
      * 将数据写入文件中

@@ -1,10 +1,14 @@
 package edu.hitsz.rank;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class PlayRecordDaoImpl implements PlayRecordDao {
@@ -53,9 +57,40 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
     }
 
     @Override
-    public void readFromFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readFromFile'");
+    @SuppressWarnings("all")
+    public void readFromFile(Difficulty difficulty) {
+        // 生成目标文件名
+        String fileName = getFileNameByDifficulty(difficulty);
+        // 创建 File 对象，检查文件是否存在
+        File file = new File(fileName);
+        // 判断文件是否存在
+        if (!file.exists()) {
+            return;
+        }
+        // 文件存在则读取文件内容
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            // 从文件读取序列化的 PlayRecord 列表
+            // 注意：这里进行强制类型转换，因为我们知道写入的是 List<PlayRecord>
+            List<PlayRecord> loadedRecords = (List<PlayRecord>) ois.readObject();
+            // 清除当前内存该难度存在的记录 防止重复
+            Iterator<PlayRecord> iterator = records.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().getDifficulty().equals(difficulty)) {
+                    iterator.remove();
+                }
+            }
+            // 将loadedRecords加入records
+            for (PlayRecord record : loadedRecords) {
+                records.add(record);
+            }
+            // 排序records
+            Collections.sort(records);
+            // 打印结果
+            System.out.println("已从 " + fileName + " 加载 " + loadedRecords.size() + " 条记录");
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -83,7 +118,8 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
      */
     private String getFileNameByDifficulty(Difficulty difficulty) {
         // 将难度转换为小写作为文件名的一部分
-        return "rank_" + difficulty.name().toLowerCase() + ".dat";
+        return "data" + File.separator + "rank" + File.separator + "rank_"
+                + difficulty.name().toLowerCase() + ".dat";
     }
 
     @Override

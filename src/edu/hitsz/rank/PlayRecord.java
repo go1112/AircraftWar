@@ -72,9 +72,16 @@ public class PlayRecord implements Comparable<PlayRecord> {
      * * *********************
      * * 比较器部分
      * * *********************
+     * 先按难度排序（难度高在前） 
+     * 然后按照分数排序（分数高在前） 
+     * 最后按照时间先后排序（最新时间在前）
      */
     @Override
     public int compareTo(PlayRecord o) {
+        int difficultyCompare = o.difficulty.ordinal() - this.difficulty.ordinal();
+        if (difficultyCompare != 0) {
+            return difficultyCompare;
+        }
         int scoreCompare = o.score - this.score;
         if (scoreCompare != 0) {
             return scoreCompare;

@@ -23,19 +23,19 @@ public class RankingBoard {
         recordDao.readFromFile(difficulty);
         List<PlayRecord> records = recordDao.getAllPlayRecords(difficulty);
 
-        System.out.println("-----------------------------------------");
-        System.out.println("        排行榜（" + difficulty + "）        ");
-        System.out.println("-----------------------------------------");
-        System.out.println("玩家名         分数              游戏时间");
+        System.out.println("---------------------------------------------------");
+        System.out.println("               排行榜（" + difficulty + "）          ");
+        System.out.println("---------------------------------------------------");
+        System.out.println("名次        玩家名      分数             游戏时间");
 
         for (int i = 0; i < records.size(); i++) {
-            System.out.println(records.get(i));
+            System.out.println(String.format("No%-10d", i + 1) + records.get(i));
         }
 
         if (records.isEmpty()) {
             System.out.println("暂无记录");
         }
-        System.out.println("-----------------------------------------");
+        System.out.println("---------------------------------------------------");
     }
 
     /**
@@ -51,7 +51,7 @@ public class RankingBoard {
     /**
      * 将各个难度的游戏记录同步到文件中
      */
-    public void writeRecordToFile(Difficulty difficulty){
+    public void writeRecordToFile(Difficulty difficulty) {
         recordDao.writeToFile(difficulty);
     }
 }

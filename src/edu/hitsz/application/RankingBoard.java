@@ -20,6 +20,7 @@ public class RankingBoard {
      * @param difficulty 游戏难度
      */
     public void showRanking(Difficulty difficulty) {
+        recordDao.readFromFile(difficulty);
         List<PlayRecord> records = recordDao.getAllPlayRecords(difficulty);
 
         System.out.println("-----------------------------------------");
@@ -41,7 +42,7 @@ public class RankingBoard {
      * 添加当前玩家游戏记录
      */
     public void addCurRecord(String playerName, int score, Difficulty difficulty) {
-        // 创建-》加入内存中的列表-》写入文件
+        // 创建-》加入内存中的列表
         PlayRecord newPlayRecord = new PlayRecord(score, playerName, LocalDateTime.now(), difficulty);
 
         recordDao.addRecord(newPlayRecord);

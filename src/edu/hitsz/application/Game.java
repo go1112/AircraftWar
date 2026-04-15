@@ -57,6 +57,7 @@ public class Game extends JPanel {
     // 当前玩家信息
     private String playName;
     private int score = 0;
+    private Difficulty difficulty;
 
     // 游戏结束标志
     private boolean gameOverFlag = false;
@@ -350,6 +351,7 @@ public class Game extends JPanel {
             rankingBoard.showRanking(Difficulty.BEGINNER);
             rankingBoard.writeRecordToFile();
             scanner.close();
+            System.exit(0);
         }
     };
 

@@ -72,13 +72,13 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
             // 从文件读取序列化的 PlayRecord 列表
             // 注意：这里进行强制类型转换，因为我们知道写入的是 List<PlayRecord>
             List<PlayRecord> loadedRecords = (List<PlayRecord>) ois.readObject();
-            // 清除当前内存该难度存在的记录 防止重复
-            Iterator<PlayRecord> iterator = records.iterator();
-            while (iterator.hasNext()) {
-                if (iterator.next().getDifficulty().equals(difficulty)) {
-                    iterator.remove();
-                }
-            }
+            // // 清除当前内存该难度存在的记录 防止重复
+            // Iterator<PlayRecord> iterator = records.iterator();
+            // while (iterator.hasNext()) {
+            //     if (iterator.next().getDifficulty().equals(difficulty)) {
+            //         iterator.remove();
+            //     }
+            // }
             // 将loadedRecords加入records
             for (PlayRecord record : loadedRecords) {
                 records.add(record);

@@ -45,8 +45,16 @@ public class RankingBoard {
         PlayRecord newPlayRecord = new PlayRecord(score, playerName, LocalDateTime.now(), difficulty);
 
         recordDao.addRecord(newPlayRecord);
+    }
 
-        recordDao.writeToFile(difficulty);
-        System.out.println("记录已保存: " + newPlayRecord);
+    /**
+     * 将各个难度的游戏记录同步到文件中
+     */
+    public void writeRecordToFile(){
+        recordDao.writeToFile(Difficulty.BEGINNER);
+        recordDao.writeToFile(Difficulty.BASIC);
+        recordDao.writeToFile(Difficulty.INTERMEDIATE);
+        recordDao.writeToFile(Difficulty.ADVANCED);
+        recordDao.writeToFile(Difficulty.EXPERT);
     }
 }

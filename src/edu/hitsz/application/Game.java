@@ -70,10 +70,12 @@ public class Game extends JPanel {
     private AbstractAircraft bossEnemy = null;
 
     // 排行榜功能类
-    PlayRecordDao playRecordDao = new PlayRecordDaoImpl(new ArrayList<>());
+    PlayRecordDaoImpl playRecordDao = new PlayRecordDaoImpl(new ArrayList<>());
     RankingBoard rankingBoard = new RankingBoard(playRecordDao);
 
     public Game() {
+        // 输入玩家信息
+        ConfirmPlayerInfo();
         // 使用单例模式对heroAircraft初始化
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
@@ -96,6 +98,37 @@ public class Game extends JPanel {
 
         this.timer = new Timer("game-action-timer", true);
 
+    }
+
+    private void ConfirmPlayerInfo() {
+        Scanner scanner = new Scanner(System.in);
+        // 输入玩家名字
+        System.out.print("请输入玩家名字:");
+        playName = scanner.next();
+        // 选择游戏难度
+        System.out.print("请选择游戏难度等级(1-5):");
+        String choice = scanner.next();
+        while (true) {
+            if (choice.equals("1")) {
+                difficulty = Difficulty.BEGINNER;
+                break;
+            } else if (choice.equals("2")) {
+                difficulty = Difficulty.BASIC;
+                break;
+            } else if (choice.equals("3")) {
+                difficulty = Difficulty.INTERMEDIATE;
+                break;
+            } else if (choice.equals("4")) {
+                difficulty = Difficulty.ADVANCED;
+                break;
+            } else if (choice.equals("5")) {
+                difficulty = Difficulty.EXPERT;
+                break;
+            } else {
+                System.out.println("输入不匹配 请输入1-5的数字...");
+            }
+        }
+        scanner.close();
     }
 
     // 随机选择敌机类型（可控制概率）
@@ -344,13 +377,9 @@ public class Game extends JPanel {
             timer.cancel(); // 取消定时器并终止所有调度任务
             gameOverFlag = true;
             System.out.println("Game Over!");
-            System.out.print("请输入玩家名：");
-            Scanner scanner = new Scanner(System.in);
-            playName = scanner.next();
-            rankingBoard.addCurRecord(playName, score, Difficulty.BEGINNER);
-            rankingBoard.showRanking(Difficulty.BEGINNER);
-            rankingBoard.writeRecordToFile();
-            scanner.close();
+            rankingBoard.addCurRecord(playName, score, difficulty);
+            rankingBoard.showRanking(difficulty);
+            rankingBoard.writeRecordToFile(difficulty);
             System.exit(0);
         }
     };

@@ -5,12 +5,12 @@ import java.util.List;
 
 import edu.hitsz.rank.Difficulty;
 import edu.hitsz.rank.PlayRecord;
-import edu.hitsz.rank.PlayRecordDao;
+import edu.hitsz.rank.PlayRecordDaoImpl;
 
 public class RankingBoard {
-    private final PlayRecordDao recordDao;
+    private final PlayRecordDaoImpl recordDao;
 
-    public RankingBoard(PlayRecordDao recordDao) {
+    public RankingBoard(PlayRecordDaoImpl recordDao) {
         this.recordDao = recordDao;
     }
 
@@ -51,11 +51,7 @@ public class RankingBoard {
     /**
      * 将各个难度的游戏记录同步到文件中
      */
-    public void writeRecordToFile(){
-        recordDao.writeToFile(Difficulty.BEGINNER);
-        recordDao.writeToFile(Difficulty.BASIC);
-        recordDao.writeToFile(Difficulty.INTERMEDIATE);
-        recordDao.writeToFile(Difficulty.ADVANCED);
-        recordDao.writeToFile(Difficulty.EXPERT);
+    public void writeRecordToFile(Difficulty difficulty){
+        recordDao.writeToFile(difficulty);
     }
 }

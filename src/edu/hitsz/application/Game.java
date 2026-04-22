@@ -59,6 +59,10 @@ public class Game extends JPanel {
     private int score = 0;
     private Difficulty difficulty;
 
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+    }
+
     // 游戏结束标志
     private boolean gameOverFlag = false;
 
@@ -106,28 +110,28 @@ public class Game extends JPanel {
         System.out.print("请输入玩家名字:");
         playName = scanner.next();
         // 选择游戏难度
-        System.out.print("请选择游戏难度等级(1-5):");
-        String choice = scanner.next();
-        while (true) {
-            if (choice.equals("1")) {
-                difficulty = Difficulty.BEGINNER;
-                break;
-            } else if (choice.equals("2")) {
-                difficulty = Difficulty.BASIC;
-                break;
-            } else if (choice.equals("3")) {
-                difficulty = Difficulty.INTERMEDIATE;
-                break;
-            } else if (choice.equals("4")) {
-                difficulty = Difficulty.ADVANCED;
-                break;
-            } else if (choice.equals("5")) {
-                difficulty = Difficulty.EXPERT;
-                break;
-            } else {
-                System.out.println("输入不匹配 请输入1-5的数字...");
-            }
-        }
+        // System.out.print("请选择游戏难度等级(1-5):");
+        // String choice = scanner.next();
+        // while (true) {
+        //     if (choice.equals("1")) {
+        //         difficulty = Difficulty.BEGINNER;
+        //         break;
+        //     } else if (choice.equals("2")) {
+        //         difficulty = Difficulty.BASIC;
+        //         break;
+        //     } else if (choice.equals("3")) {
+        //         difficulty = Difficulty.INTERMEDIATE;
+        //         break;
+        //     } else if (choice.equals("4")) {
+        //         difficulty = Difficulty.ADVANCED;
+        //         break;
+        //     } else if (choice.equals("5")) {
+        //         difficulty = Difficulty.EXPERT;
+        //         break;
+        //     } else {
+        //         System.out.println("输入不匹配 请输入1-5的数字...");
+        //     }
+        // }
         scanner.close();
     }
 

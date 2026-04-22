@@ -6,6 +6,7 @@ import java.awt.*;
 
 /**
  * 程序入口
+ * 
  * @author hitsz
  */
 public class Main {
@@ -14,23 +15,21 @@ public class Main {
     public static final int WINDOW_HEIGHT = 768;
 
     public static void main(String[] args) {
-
-        System.out.println("Hello Aircraft War");
-
-        // 获得屏幕的分辨率，初始化 Frame
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        JFrame frame = new JFrame("Aircraft War");
-        frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-        frame.setResizable(false); // 用户无法调节屏幕大小 已经固定好了
-        //设置窗口的大小和位置,居中放置
-        frame.setBounds(((int) screenSize.getWidth() - WINDOW_WIDTH) / 2, 0,
-                WINDOW_WIDTH, WINDOW_HEIGHT);
-        // 当用户点击窗口的关闭按钮时，程序会调用 System.exit(0) 结束整个进程，确保游戏完全退出
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        Game game = new Game();
-        frame.add(game);
-        frame.setVisible(true);
-        game.action();
+        System.out.println("飞机大战启动中...");
+        
+        // 使用SwingUtilities.invokeLater确保Swing组件在事件分发线程上创建
+        SwingUtilities.invokeLater(() -> {
+            try {
+                // 设置Swing外观为系统默认
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            // 创建并显示主菜单
+            new MainMenuFrame();
+        });
+        
+        System.out.println("主菜单已启动");
     }
 }

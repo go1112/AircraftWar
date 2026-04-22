@@ -3,6 +3,7 @@ package edu.hitsz.application;
 import javax.swing.*;
 
 import edu.hitsz.rank.Difficulty;
+import edu.hitsz.rank.PlayRecordDao;
 import edu.hitsz.rank.PlayRecordDaoImpl;
 
 import java.awt.*;
@@ -194,8 +195,10 @@ public class MainMenuFrame extends JFrame {
     }
 
     private void showRanking(){
+        PlayRecordDao recordDao = new PlayRecordDaoImpl(new ArrayList<>());
+        recordDao.readFromFile(Difficulty.BEGINNER);
         SwingUtilities.invokeLater(()->{
-            new RankingFrame(Difficulty.BASIC, new PlayRecordDaoImpl(new ArrayList<>()));
+            new RankingFrame(Difficulty.BEGINNER, recordDao);
         });
     }
 }

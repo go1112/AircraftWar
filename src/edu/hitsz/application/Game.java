@@ -78,8 +78,6 @@ public class Game extends JPanel {
     RankingBoard rankingBoard = new RankingBoard(playRecordDao);
 
     public Game() {
-        // 输入玩家信息
-        ConfirmPlayerInfo();
         // 使用单例模式对heroAircraft初始化
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
@@ -102,37 +100,6 @@ public class Game extends JPanel {
 
         this.timer = new Timer("game-action-timer", true);
 
-    }
-
-    private void ConfirmPlayerInfo() {
-        Scanner scanner = new Scanner(System.in);
-        // 输入玩家名字
-        System.out.print("请输入玩家名字:");
-        playName = scanner.next();
-        // 选择游戏难度
-        // System.out.print("请选择游戏难度等级(1-5):");
-        // String choice = scanner.next();
-        // while (true) {
-        // if (choice.equals("1")) {
-        // difficulty = Difficulty.BEGINNER;
-        // break;
-        // } else if (choice.equals("2")) {
-        // difficulty = Difficulty.BASIC;
-        // break;
-        // } else if (choice.equals("3")) {
-        // difficulty = Difficulty.INTERMEDIATE;
-        // break;
-        // } else if (choice.equals("4")) {
-        // difficulty = Difficulty.ADVANCED;
-        // break;
-        // } else if (choice.equals("5")) {
-        // difficulty = Difficulty.EXPERT;
-        // break;
-        // } else {
-        // System.out.println("输入不匹配 请输入1-5的数字...");
-        // }
-        // }
-        scanner.close();
     }
 
     // 随机选择敌机类型（可控制概率）
@@ -381,26 +348,56 @@ public class Game extends JPanel {
             timer.cancel(); // 取消定时器并终止所有调度任务
             gameOverFlag = true;
             System.out.println("Game Over!");
-            rankingBoard.addCurRecord(playName, score, difficulty);
-            rankingBoard.showRanking(difficulty);
-            rankingBoard.writeRecordToFile(difficulty);
-            // System.exit(0);
-            // 显示游戏结束信息
-            int option = JOptionPane.showConfirmDialog(
-                    null,
-                    "游戏结束！得分：" + score + "\n是否返回主菜单？",
-                    "游戏结束",
-                    JOptionPane.YES_NO_OPTION);
-
-            if (option == JOptionPane.YES_OPTION) {
+            SwingUtilities.invokeLater(() -> {
+                // 弹出对话框 让用户输入玩家名
+                playName = showNameInputDialog();
                 // 关闭游戏窗口
                 closeGameWindow();
-            } else {
-                // 完全退出游戏
-                System.exit(0);
-            }
+                // 更新数据库
+                rankingBoard.addCurRecord(playName, score, difficulty);
+                // 显示排行榜表格
+                rankingBoard.showRankInfo(difficulty);
+            });
         }
     };
+
+    private String showNameInputDialog() {
+        // 创建自定义的输入对话框
+        JTextField nameField = new JTextField(15);
+
+        Object[] message = {
+                "游戏结束！您的得分: " + score,
+                "请输入玩家姓名:",
+                nameField
+        };
+
+        int option = JOptionPane.showConfirmDialog(
+                this, // 父组件，如果是JPanel，可以用this
+                message,
+                "游戏结束 - 记录得分",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
+
+        if (option == JOptionPane.OK_OPTION) {
+            String name = nameField.getText().trim();
+            if (name.isEmpty()) {
+                // 如果用户没有输入，使用默认名称
+                return "匿名玩家";
+            }
+            return name;
+        }
+
+        return null; // 用户取消了输入
+    }
+
+    private void ConfirmPlayerInfo() {
+        if (playName == null || playName.equals("")) {
+            playName = "匿名玩家";
+        }
+        rankingBoard.addCurRecord(playName, score, difficulty);
+        rankingBoard.writeRecordToFile(difficulty);
+
+    }
 
     /**
      * 安全关闭游戏窗口并返回主菜单
@@ -412,9 +409,6 @@ public class Game extends JPanel {
             if (window != null) {
                 window.dispose();
             }
-
-            // 重新显示主菜单
-            new MainMenuFrame();
         });
     }
 

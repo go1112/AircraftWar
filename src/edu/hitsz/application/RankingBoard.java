@@ -3,6 +3,8 @@ package edu.hitsz.application;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import edu.hitsz.rank.Difficulty;
 import edu.hitsz.rank.PlayRecord;
 import edu.hitsz.rank.PlayRecordDaoImpl;
@@ -19,23 +21,10 @@ public class RankingBoard {
      * 
      * @param difficulty 游戏难度
      */
-    public void showRanking(Difficulty difficulty) {
-        recordDao.readFromFile(difficulty);
-        List<PlayRecord> records = recordDao.getAllPlayRecords(difficulty);
-
-        System.out.println("---------------------------------------------------");
-        System.out.println("               排行榜（" + difficulty + "）          ");
-        System.out.println("---------------------------------------------------");
-        System.out.println("名次        玩家名      分数             游戏时间");
-
-        for (int i = 0; i < records.size(); i++) {
-            System.out.println(String.format("No%-10d", i + 1) + records.get(i));
-        }
-
-        if (records.isEmpty()) {
-            System.out.println("暂无记录");
-        }
-        System.out.println("---------------------------------------------------");
+    public void showRankInfo(Difficulty difficulty) {
+        SwingUtilities.invokeLater(()->{
+            new RankingFrame(difficulty, recordDao);
+        });
     }
 
     /**
@@ -44,8 +33,10 @@ public class RankingBoard {
     public void addCurRecord(String playerName, int score, Difficulty difficulty) {
         // 创建-》加入内存中的列表
         PlayRecord newPlayRecord = new PlayRecord(score, playerName, LocalDateTime.now(), difficulty);
-
         recordDao.addRecord(newPlayRecord);
+        recordDao.readFromFile(difficulty);
+        recordDao.writeToFile(difficulty);
+        
     }
 
     /**

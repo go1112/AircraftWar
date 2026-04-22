@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class PlayRecordDaoImpl implements PlayRecordDao {
@@ -71,13 +72,6 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
             // 从文件读取序列化的 PlayRecord 列表
             // 注意：这里进行强制类型转换，因为我们知道写入的是 List<PlayRecord>
             List<PlayRecord> loadedRecords = (List<PlayRecord>) ois.readObject();
-            // // 清除当前内存该难度存在的记录 防止重复
-            // Iterator<PlayRecord> iterator = records.iterator();
-            // while (iterator.hasNext()) {
-            //     if (iterator.next().getDifficulty().equals(difficulty)) {
-            //         iterator.remove();
-            //     }
-            // }
             // 将loadedRecords加入records
             for (PlayRecord record : loadedRecords) {
                 records.add(record);
@@ -125,6 +119,50 @@ public class PlayRecordDaoImpl implements PlayRecordDao {
     @Override
     public void addRecord(PlayRecord record) {
         records.add(record); // 在末尾进行添加
+    }
+
+    @Override
+    public void deleteByRank(Difficulty difficulty, int rank) {
+        if (rank < 1) {
+            throw new IllegalArgumentException("排名必须大于0");
+        }
+
+        try {
+            // 1. 获取指定难度的所有记录（已排序）
+            List<PlayRecord> difficultyRecords = getAllPlayRecords(difficulty);
+
+            // 2. 检查排名是否有效
+            if (rank > difficultyRecords.size()) {
+                throw new IllegalArgumentException(
+                        String.format("排名 %d 无效，%s难度下只有 %d 条记录",
+                                rank, difficulty, difficultyRecords.size()));
+            }
+
+            // 3. 从列表中删除指定排名的记录
+            PlayRecord removedRecord = difficultyRecords.remove(rank - 1);
+            System.out.println("已删除记录: " + removedRecord);
+
+            // 4. 更新内存中的完整记录列表
+            // 先删除该难度下的所有记录
+            Iterator<PlayRecord> iterator = records.iterator();
+            while (iterator.hasNext()) {
+                if (iterator.next().getDifficulty().equals(difficulty)) {
+                    iterator.remove();
+                }
+            }
+
+            // 再重新添加更新后的该难度记录
+            records.addAll(difficultyRecords);
+
+            // 5. 将更新后的记录写回文件
+            writeToFile(difficulty);
+
+            System.out.println(String.format("成功删除 %s 难度第 %d 名记录", difficulty, rank));
+
+        } catch (Exception e) {
+            System.err.println("删除记录失败: " + e.getMessage());
+            throw new RuntimeException("删除操作失败", e);
+        }
     }
 
 }

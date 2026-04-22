@@ -3,11 +3,13 @@ package edu.hitsz.application;
 import javax.swing.*;
 
 import edu.hitsz.rank.Difficulty;
+import edu.hitsz.rank.PlayRecordDaoImpl;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentListener;
+import java.util.ArrayList;
 
 public class MainMenuFrame extends JFrame {
     // 1. 窗口容器组件
@@ -43,6 +45,7 @@ public class MainMenuFrame extends JFrame {
         setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
         // 添加事件监听器
         addEventListeners();
@@ -191,6 +194,8 @@ public class MainMenuFrame extends JFrame {
     }
 
     private void showRanking(){
-
+        SwingUtilities.invokeLater(()->{
+            new RankingFrame(Difficulty.BASIC, new PlayRecordDaoImpl(new ArrayList<>()));
+        });
     }
 }

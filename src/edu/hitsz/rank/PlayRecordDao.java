@@ -14,6 +14,8 @@ public interface PlayRecordDao {
      */
     void deleteAllRecords(String playerName);
 
+    void deleteByRank(Difficulty difficulty, int rank);
+
     /**
      * * *********************
      * * 查找部分

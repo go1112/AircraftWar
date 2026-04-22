@@ -184,21 +184,36 @@ public class MainMenuFrame extends JFrame {
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 创建游戏实例并设置难度
-        Game game = new Game();
-        game.setDifficulty(difficulty);
+        Game game = new Game(difficulty);
 
         gameFrame.add(game);
         gameFrame.setVisible(true);
-        
+
         // 启动游戏
         game.action();
     }
 
-    private void showRanking(){
+    private void showRanking() {
+        String[] options = { "简单", "普通", "困难", "专家", "地狱" };
+        int result = JOptionPane.showOptionDialog(
+                null,
+                "请选择你要查看的难度类型：",
+                "难度类型选择",
+                JOptionPane.DEFAULT_OPTION, // 按钮类型（使用下方 options 数组）
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options, // 自定义按钮文本数组
+                options[0] // 默认选中第一个按钮
+        );
+        if(result < 0 || result >= 5){
+            return;
+        }
+        dispose();
         PlayRecordDao recordDao = new PlayRecordDaoImpl(new ArrayList<>());
-        recordDao.readFromFile(Difficulty.BEGINNER);
-        SwingUtilities.invokeLater(()->{
-            new RankingFrame(Difficulty.BEGINNER, recordDao);
+        Difficulty difficulty = Difficulty.values()[result];
+        recordDao.readFromFile(difficulty);
+        SwingUtilities.invokeLater(() -> {
+            new RankingFrame(difficulty, recordDao);
         });
     }
 }

@@ -14,9 +14,12 @@ import edu.hitsz.rank.PlayRecordDao;
 import edu.hitsz.rank.PlayRecordDaoImpl;
 import edu.hitsz.basic.AbstractFlyingObject;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -77,7 +80,10 @@ public class Game extends JPanel {
     PlayRecordDaoImpl playRecordDao = new PlayRecordDaoImpl(new ArrayList<>());
     RankingBoard rankingBoard = new RankingBoard(playRecordDao);
 
-    public Game() {
+    public Game(Difficulty difficulty) {
+        this.difficulty = difficulty;
+        // 确定难度背景
+        backGroundImageRead();
         // 使用单例模式对heroAircraft初始化
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
@@ -99,6 +105,33 @@ public class Game extends JPanel {
         new HeroController(this, heroAircraft);
 
         this.timer = new Timer("game-action-timer", true);
+
+    }
+
+    private void backGroundImageRead() {
+        try {
+            switch (difficulty) {
+                case BEGINNER:
+                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg.jpg"));
+                    break;
+                case BASIC:
+                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
+                    break;
+                case INTERMEDIATE:
+                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg3.jpg"));
+                    break;
+                case ADVANCED:
+                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg4.jpg"));
+                    break;
+                case EXPERT:
+                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg5.jpg"));
+                    break;
+                default:
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -117,6 +117,9 @@ public class RankingFrame extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 dispose();
+                SwingUtilities.invokeLater(()->{
+                    new MainMenuFrame();
+                });
             }
         });
 

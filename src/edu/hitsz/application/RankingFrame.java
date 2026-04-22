@@ -111,7 +111,7 @@ public class RankingFrame extends JFrame {
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        JButton closeButton = new JButton("关闭");
+        JButton closeButton = new JButton("关闭窗口");
         closeButton.setFont(new Font("宋体", Font.PLAIN, 14));
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -120,34 +120,66 @@ public class RankingFrame extends JFrame {
             }
         });
 
+        JButton deleteButton = new JButton("删除记录");
+        deleteButton.setFont(new Font("宋体", Font.PLAIN, 14));
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                int selectedRow = rankingTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "请先选中一行");
+                } else {
+                    int rank = (int) tableModel.getValueAt(selectedRow, 0);
+                    if(confirmDelete()){
+                        recordDao.deleteByRank(difficulty, rank);
+                        recordDao.writeToFile(difficulty);
+                        loadRankingData();
+                    }
+                }
+            }
+        });
+
         panel.add(closeButton);
+        panel.add(deleteButton);
         return panel;
     }
+
+    private boolean confirmDelete() {
+        int option = JOptionPane.showConfirmDialog(
+                this, // 父组件
+                "确定要删除选中的记录吗？", // 消息内容
+                "删除确认", // 标题
+                JOptionPane.YES_NO_OPTION, // 选项类型（是/否）
+                JOptionPane.WARNING_MESSAGE // 消息类型（警告图标）
+        );
+        return option == JOptionPane.YES_OPTION;
+    }
+
 
     private void loadRankingData() {
         tableModel.setRowCount(0);
 
-        if(recordDao == null){
+        if (recordDao == null) {
             System.out.println("数据层为null 无法获取数据");
             return;
         }
 
         List<PlayRecord> records = recordDao.getAllPlayRecords(difficulty);
 
-        if(records.isEmpty()){
-            Object[] row = {"-","暂无记录","-","-"};
+        if (records.isEmpty()) {
+            Object[] row = { "-", "暂无记录", "-", "-" };
             tableModel.addRow(row);
             return;
         }
         // String[] columnNames = { "排名", "玩家名", "分数", "记录时间" };
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        for(int i = 0;i < records.size();i++){
+        for (int i = 0; i < records.size(); i++) {
             PlayRecord record = records.get(i);
             Object[] rowData = {
-                i + 1,
-                record.getName(),
-                record.getScore(),
-                record.getDateTime().format(formatter)
+                    i + 1,
+                    record.getName(),
+                    record.getScore(),
+                    record.getDateTime().format(formatter)
             };
             tableModel.addRow(rowData);
         }

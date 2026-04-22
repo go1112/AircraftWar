@@ -387,16 +387,7 @@ public class Game extends JPanel {
             return name;
         }
 
-        return null; // 用户取消了输入
-    }
-
-    private void ConfirmPlayerInfo() {
-        if (playName == null || playName.equals("")) {
-            playName = "匿名玩家";
-        }
-        rankingBoard.addCurRecord(playName, score, difficulty);
-        rankingBoard.writeRecordToFile(difficulty);
-
+        return "匿名玩家"; // 用户取消了输入
     }
 
     /**

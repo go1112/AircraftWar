@@ -113,24 +113,24 @@ public class Game extends JPanel {
         // System.out.print("请选择游戏难度等级(1-5):");
         // String choice = scanner.next();
         // while (true) {
-        //     if (choice.equals("1")) {
-        //         difficulty = Difficulty.BEGINNER;
-        //         break;
-        //     } else if (choice.equals("2")) {
-        //         difficulty = Difficulty.BASIC;
-        //         break;
-        //     } else if (choice.equals("3")) {
-        //         difficulty = Difficulty.INTERMEDIATE;
-        //         break;
-        //     } else if (choice.equals("4")) {
-        //         difficulty = Difficulty.ADVANCED;
-        //         break;
-        //     } else if (choice.equals("5")) {
-        //         difficulty = Difficulty.EXPERT;
-        //         break;
-        //     } else {
-        //         System.out.println("输入不匹配 请输入1-5的数字...");
-        //     }
+        // if (choice.equals("1")) {
+        // difficulty = Difficulty.BEGINNER;
+        // break;
+        // } else if (choice.equals("2")) {
+        // difficulty = Difficulty.BASIC;
+        // break;
+        // } else if (choice.equals("3")) {
+        // difficulty = Difficulty.INTERMEDIATE;
+        // break;
+        // } else if (choice.equals("4")) {
+        // difficulty = Difficulty.ADVANCED;
+        // break;
+        // } else if (choice.equals("5")) {
+        // difficulty = Difficulty.EXPERT;
+        // break;
+        // } else {
+        // System.out.println("输入不匹配 请输入1-5的数字...");
+        // }
         // }
         scanner.close();
     }
@@ -384,9 +384,39 @@ public class Game extends JPanel {
             rankingBoard.addCurRecord(playName, score, difficulty);
             rankingBoard.showRanking(difficulty);
             rankingBoard.writeRecordToFile(difficulty);
-            System.exit(0);
+            // System.exit(0);
+            // 显示游戏结束信息
+            int option = JOptionPane.showConfirmDialog(
+                    null,
+                    "游戏结束！得分：" + score + "\n是否返回主菜单？",
+                    "游戏结束",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (option == JOptionPane.YES_OPTION) {
+                // 关闭游戏窗口
+                closeGameWindow();
+            } else {
+                // 完全退出游戏
+                System.exit(0);
+            }
         }
     };
+
+    /**
+     * 安全关闭游戏窗口并返回主菜单
+     */
+    private void closeGameWindow() {
+        SwingUtilities.invokeLater(() -> {
+            // 获取顶层窗口
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                window.dispose();
+            }
+
+            // 重新显示主菜单
+            new MainMenuFrame();
+        });
+    }
 
     // ***********************
     // Paint 各部分

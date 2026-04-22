@@ -87,7 +87,7 @@ public class MainMenuFrame extends JFrame {
         rankingButton.addActionListener((ActionListener) new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // showRanking();
+                showRanking();
             }
         });
 
@@ -185,16 +185,12 @@ public class MainMenuFrame extends JFrame {
 
         gameFrame.add(game);
         gameFrame.setVisible(true);
+        
+        // 启动游戏
         game.action();
+    }
 
-        gameFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
-                // 游戏结束后可以重新显示主菜单
-                SwingUtilities.invokeLater(() -> {
-                    new MainMenuFrame();
-                });
-            }
-        });
+    private void showRanking(){
+
     }
 }

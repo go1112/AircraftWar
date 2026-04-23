@@ -1,8 +1,6 @@
 package edu.hitsz.application;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 import javax.swing.SwingUtilities;
 
 import edu.hitsz.rank.Difficulty;

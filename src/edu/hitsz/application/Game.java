@@ -9,6 +9,7 @@ import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.prop.AbstractProp;
+import edu.hitsz.prop.PropEffectTimer;
 import edu.hitsz.rank.Difficulty;
 import edu.hitsz.rank.PlayRecordDao;
 import edu.hitsz.rank.PlayRecordDaoImpl;
@@ -61,6 +62,16 @@ public class Game extends JPanel {
     private String playName;
     private int score = 0;
     private Difficulty difficulty;
+
+    private PropEffectTimer fireTimer;
+
+    public synchronized PropEffectTimer getFireTimer() {
+        return fireTimer;
+    }
+
+    public synchronized void setFireTimer(PropEffectTimer fireTimer) {
+        this.fireTimer = fireTimer;
+    }
 
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;

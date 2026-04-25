@@ -8,6 +8,7 @@ import edu.hitsz.aircraft.factory.EnemyFactory;
 import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
+import edu.hitsz.music.MusicManager;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropEffectTimer;
 import edu.hitsz.rank.Difficulty;
@@ -91,8 +92,11 @@ public class Game extends JPanel {
     PlayRecordDaoImpl playRecordDao = new PlayRecordDaoImpl(new ArrayList<>());
     RankingBoard rankingBoard = new RankingBoard(playRecordDao);
 
+    private MusicManager musicManager = MusicManager.getInstance();
+
     public Game(Difficulty difficulty) {
         this.difficulty = difficulty;
+        musicManager.playBgmMusic("bgm", true);
         // 确定难度背景
         backGroundImageRead();
         // 使用单例模式对heroAircraft初始化
@@ -313,8 +317,10 @@ public class Game extends JPanel {
                     // 敌机损失一定生命值
                     enemyAircraft.decreaseHp(bullet.getPower());
                     bullet.vanish();
+                    musicManager.playEffectMusic("bullet_hit");
                     if (enemyAircraft.notValid()) {
                         triggerReward(enemyAircraft);
+                        musicManager.playEffectMusic("bomb_explosion");
                     }
                 }
                 // 英雄机 与 敌机 相撞，均损毁
@@ -331,6 +337,7 @@ public class Game extends JPanel {
                 continue;
             }
             if (prop.crash(heroAircraft)) {
+                musicManager.playEffectMusic("get_supply");
                 prop.activate(heroAircraft, this);
                 prop.vanish();
             }
@@ -392,11 +399,14 @@ public class Game extends JPanel {
             timer.cancel(); // 取消定时器并终止所有调度任务
             gameOverFlag = true;
             System.out.println("Game Over!");
+            musicManager.playEffectMusic("game_over");
             SwingUtilities.invokeLater(() -> {
                 // 弹出对话框 让用户输入玩家名
                 playName = showNameInputDialog();
                 // 关闭游戏窗口
                 closeGameWindow();
+                // 关闭所有游戏
+                musicManager.stopAllMusic();
                 // 更新数据库
                 rankingBoard.addCurRecord(playName, score, difficulty);
                 // 显示排行榜表格

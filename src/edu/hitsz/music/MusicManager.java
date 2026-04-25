@@ -95,7 +95,7 @@ public class MusicManager {
 
     public void playBgmMusic(MusicType key, boolean loop) {
         stopBgmMusic(key);
-        MusicThread thread = new MusicThread(audioPaths.get(key), MusicThread.PlayMode.STREAM, loop);
+        MusicThread thread = new MusicThread(audioPaths.get(key), loop);
         thread.start();
         activeBgmThreads.put(key, thread);
     }

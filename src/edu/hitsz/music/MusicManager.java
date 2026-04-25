@@ -7,12 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-
-import edu.hitsz.music.MusicThread.PlayMode;
 
 public class MusicManager {
 
@@ -35,33 +32,42 @@ public class MusicManager {
     }
 
     // 音乐名字 和 音频文件路径 的对应哈希表
-    private final Map<String, String> audioPaths = new HashMap<>();
+    private final Map<MusicType, String> audioPaths = new HashMap<>();
     // 音乐名字 和 音频线程 的对应哈希表 而且是正在播放的音乐
-    private final Map<String, MusicThread> activeBgmThreads = new ConcurrentHashMap<>();
+    private final Map<MusicType, MusicThread> activeBgmThreads = new ConcurrentHashMap<>();
     // 音乐名字 和 音频播放器 的对应哈希表 而且是短音效
-    private final Map<String, Clip> preloadedSoundClips = new ConcurrentHashMap<>();
+    private final Map<MusicType, Clip> preloadedSoundClips = new ConcurrentHashMap<>();
     // 用于短音效的线程池 最多可以同时播放4种短音效
     private final ExecutorService soundEffectExecutor = Executors.newFixedThreadPool(4);
 
+    public enum MusicType{
+        BGM,
+        BGM_BOSS,
+        BOMB_EXPLOSION,
+        BULLET_HIT,
+        GAME_OVER,
+        GET_SUPPLY
+    }
+
     private void initAudioPaths() {
-        audioPaths.put("bgm_boss", "src/videos/bgm_boss.wav");
-        audioPaths.put("bgm", "src/videos/bgm.wav");
-        audioPaths.put("bomb_explosion", "src/videos/bomb_explosion.wav");
-        audioPaths.put("bullet_hit", "src/videos/bullet_hit.wav");
-        audioPaths.put("game_over", "src/videos/game_over.wav");
-        audioPaths.put("get_supply", "src/videos/get_supply.wav");
+        audioPaths.put(MusicType.BGM_BOSS, "src/videos/bgm_boss.wav");
+        audioPaths.put(MusicType.BGM, "src/videos/bgm.wav");
+        audioPaths.put(MusicType.BOMB_EXPLOSION, "src/videos/bomb_explosion.wav");
+        audioPaths.put(MusicType.BULLET_HIT, "src/videos/bullet_hit.wav");
+        audioPaths.put(MusicType.GAME_OVER, "src/videos/game_over.wav");
+        audioPaths.put(MusicType.GET_SUPPLY, "src/videos/get_supply.wav");
     }
 
     private void preloadedAllSoundClips() {
-        for (String key : audioPaths.keySet()) {
-            if (key.equals("bgm") || key.equals("bgm_boss")) {
+        for (MusicType key : audioPaths.keySet()) {
+            if (key.equals(MusicType.BGM) || key.equals(MusicType.BGM_BOSS)) {
                 continue;
             }
             preloadedSoundClip(key);
         }
     }
 
-    private void preloadedSoundClip(String key) {
+    private void preloadedSoundClip(MusicType key) {
         soundEffectExecutor.submit(() -> {
             try {
                 AudioInputStream ais = AudioSystem.getAudioInputStream(new File(audioPaths.get(key)));
@@ -76,14 +82,14 @@ public class MusicManager {
         });
     }
 
-    public void playBgmMusic(String key, boolean loop) {
-        stopBgmMusic(key); // 先停止之前的
+    public void playBgmMusic(MusicType key, boolean loop) {
+        stopBgmMusic(key);
         MusicThread thread = new MusicThread(audioPaths.get(key), MusicThread.PlayMode.STREAM, loop);
         thread.start();
         activeBgmThreads.put(key, thread);
     }
 
-    public void stopBgmMusic(String key) {
+    public void stopBgmMusic(MusicType key) {
         MusicThread bgm = activeBgmThreads.get(key);
         if (bgm != null) {
             bgm.stopPlayback();
@@ -91,7 +97,7 @@ public class MusicManager {
         }
     }
 
-    public void playEffectMusic(String key) {
+    public void playEffectMusic(MusicType key) {
         if (!preloadedSoundClips.containsKey(key)) {
             return;
         }

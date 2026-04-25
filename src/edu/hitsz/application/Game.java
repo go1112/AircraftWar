@@ -9,6 +9,7 @@ import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.music.MusicManager;
+import edu.hitsz.music.MusicManager.MusicType;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropEffectTimer;
 import edu.hitsz.rank.Difficulty;
@@ -96,7 +97,7 @@ public class Game extends JPanel {
 
     public Game(Difficulty difficulty) {
         this.difficulty = difficulty;
-        musicManager.playBgmMusic("bgm", true);
+        musicManager.playBgmMusic(MusicType.BGM, true);
         // 确定难度背景
         backGroundImageRead();
         // 使用单例模式对heroAircraft初始化
@@ -192,6 +193,8 @@ public class Game extends JPanel {
     }
 
     private void spawnBossEnemy() {
+        musicManager.stopBgmMusic(MusicType.BGM);
+        musicManager.playBgmMusic(MusicType.BGM_BOSS, true);
         bossEnemy = new BossEnemyFactory().createEnemy(getRandomWidth(EnemyType.BOSS), 0);
         enemyAircrafts.add(bossEnemy);
         bossSpawned = true;
@@ -317,10 +320,14 @@ public class Game extends JPanel {
                     // 敌机损失一定生命值
                     enemyAircraft.decreaseHp(bullet.getPower());
                     bullet.vanish();
-                    musicManager.playEffectMusic("bullet_hit");
+                    musicManager.playEffectMusic(MusicType.BULLET_HIT);
                     if (enemyAircraft.notValid()) {
                         triggerReward(enemyAircraft);
-                        musicManager.playEffectMusic("bomb_explosion");
+                        if(enemyAircraft instanceof BossEnemy){
+                            musicManager.stopBgmMusic(MusicType.BGM_BOSS);
+                            musicManager.playBgmMusic(MusicType.BGM, true);
+                        }
+                        // musicManager.playEffectMusic(MusicType.BOMB_EXPLOSION);
                     }
                 }
                 // 英雄机 与 敌机 相撞，均损毁
@@ -337,7 +344,7 @@ public class Game extends JPanel {
                 continue;
             }
             if (prop.crash(heroAircraft)) {
-                musicManager.playEffectMusic("get_supply");
+                musicManager.playEffectMusic(MusicType.GET_SUPPLY);
                 prop.activate(heroAircraft, this);
                 prop.vanish();
             }
@@ -373,7 +380,7 @@ public class Game extends JPanel {
 
             scoreThreshold = (int) (score * 1.1);
             bossSpawned = false;
-            System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
+            // System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
         }
     }
 
@@ -399,7 +406,7 @@ public class Game extends JPanel {
             timer.cancel(); // 取消定时器并终止所有调度任务
             gameOverFlag = true;
             System.out.println("Game Over!");
-            musicManager.playEffectMusic("game_over");
+            musicManager.playEffectMusic(MusicType.GAME_OVER);
             SwingUtilities.invokeLater(() -> {
                 // 弹出对话框 让用户输入玩家名
                 playName = showNameInputDialog();

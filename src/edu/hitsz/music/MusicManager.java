@@ -69,6 +69,7 @@ public class MusicManager {
     }
 
     private void preloadedSoundClip(MusicType key) {
+        // 异步加载 提高效率 保障游戏启动流畅而不卡顿
         soundEffectExecutor.submit(() -> {
             try {
                 AudioInputStream ais = AudioSystem.getAudioInputStream(new File(audioPaths.get(key)));

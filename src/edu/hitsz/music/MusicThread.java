@@ -69,7 +69,7 @@ public class MusicThread extends Thread {
 
             }
 
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[8192];
             int bytesRead;
             do {
                 // 每次读取前可额外检查 isRunning，加快响应

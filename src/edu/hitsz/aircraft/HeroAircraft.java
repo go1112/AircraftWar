@@ -20,8 +20,11 @@ public class HeroAircraft extends AbstractAircraft {
         super(locationX, locationY, speedX, speedY, hp);
         this.power = 30;
         this.direction = -1;
-
         this.setShootStrategy(new StraightShoot(shootNum));
+    }
+
+    public static void reset(){
+        instance = null;
     }
 
     // 提供全局访问点 双重锁定检查

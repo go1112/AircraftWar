@@ -101,6 +101,7 @@ public class Game extends JPanel {
         // 确定难度背景
         backGroundImageRead();
         // 使用单例模式对heroAircraft初始化
+        HeroAircraft.reset();
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),

@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import javax.sound.sampled.*;
 
+import edu.hitsz.music.MusicManager.MusicType;
+
 public class MusicThread extends Thread {
     private String filePath;
     private boolean loop;
@@ -71,6 +73,13 @@ public class MusicThread extends Thread {
                 line.open(format);
                 line.start();
 
+                // 设置音效音量
+                if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                    FloatControl gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
+                    gainControl.setValue(6.0f);
+
+                }
+
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 do {
@@ -107,7 +116,7 @@ public class MusicThread extends Thread {
             stream = AudioSystem.getAudioInputStream(new File(filePath));
             clip = AudioSystem.getClip();
             clip.open(stream);
-            stream.close(); 
+            stream.close();
 
             if (loop) {
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -169,11 +178,11 @@ public class MusicThread extends Thread {
     }
 
     // /**
-    //  * 设置音量
-    //  */
+    // * 设置音量
+    // */
     // public void setVolume(float volume) {
-    //     this.volume = volume;
-    //     audioPlayer.setVolume(volume);
+    // this.volume = volume;
+    // audioPlayer.setVolume(volume);
     // }
 
     /**

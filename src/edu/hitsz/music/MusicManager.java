@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class MusicManager {
 
@@ -40,7 +41,7 @@ public class MusicManager {
     // 用于短音效的线程池 最多可以同时播放4种短音效
     private final ExecutorService soundEffectExecutor = Executors.newFixedThreadPool(4);
 
-    public enum MusicType{
+    public enum MusicType {
         BGM,
         BGM_BOSS,
         BOMB_EXPLOSION,
@@ -74,6 +75,16 @@ public class MusicManager {
                 Clip clip = AudioSystem.getClip();
                 clip.open(ais);
                 ais.close();
+
+                // 设置音效音量
+                if (clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+                    FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                    if (key == MusicType.BOMB_EXPLOSION) {
+                        gainControl.setValue(-20.0f);
+                    } else {
+                        gainControl.setValue(-8.0f);
+                    }
+                }
                 // clip先不用start
                 preloadedSoundClips.put(key, clip);
             } catch (Exception e) {

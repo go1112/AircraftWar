@@ -85,7 +85,7 @@ public class Game extends JPanel {
     // Boss机产生标志
     private boolean bossSpawned = false;
     // Boss机产生的分数阈值器
-    private int scoreThreshold = 100;
+    private int scoreThreshold = 500;
     // Boss机
     private AbstractAircraft bossEnemy = null;
 
@@ -327,7 +327,7 @@ public class Game extends JPanel {
                             musicManager.stopBgmMusic(MusicType.BGM_BOSS);
                             musicManager.playBgmMusic(MusicType.BGM, true);
                         }
-                        // musicManager.playEffectMusic(MusicType.BOMB_EXPLOSION);
+                        musicManager.playEffectMusic(MusicType.BOMB_EXPLOSION);
                     }
                 }
                 // 英雄机 与 敌机 相撞，均损毁
@@ -378,7 +378,7 @@ public class Game extends JPanel {
                 }
             }
 
-            scoreThreshold = (int) (score * 1.1);
+            scoreThreshold = (int) (score * 1.5);
             bossSpawned = false;
             // System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
         }

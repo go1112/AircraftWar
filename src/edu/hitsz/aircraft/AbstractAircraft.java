@@ -2,7 +2,9 @@ package edu.hitsz.aircraft;
 
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.prop.GetProp;
+import edu.hitsz.prop.PropType;
 import edu.hitsz.prop.observer.EnemyObserver;
+import edu.hitsz.prop.observer.ObserverManager;
 import edu.hitsz.shoot.ShootStrategy;
 import edu.hitsz.basic.AbstractFlyingObject;
 
@@ -14,7 +16,7 @@ import java.util.List;
  * 
  * @author hitsz
  */
-public abstract class AbstractAircraft extends AbstractFlyingObject implements GetProp,EnemyObserver{
+public abstract class AbstractAircraft extends AbstractFlyingObject implements GetProp, EnemyObserver {
 
     // 最大生命值
     protected int maxHp;
@@ -32,8 +34,17 @@ public abstract class AbstractAircraft extends AbstractFlyingObject implements G
     // 构造器
     public AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY);
+        ObserverManager.getInstance().addObserver(this, PropType.BOMB);
+        ObserverManager.getInstance().addObserver(this, PropType.FROZEN);
         this.hp = hp;
         this.maxHp = hp;
+    }
+
+    @Override
+    public void vanish() {
+        super.vanish();
+        ObserverManager.getInstance().removeObserver(this, PropType.BOMB);
+        ObserverManager.getInstance().removeObserver(this, PropType.FROZEN);
     }
 
     // 扣除血量

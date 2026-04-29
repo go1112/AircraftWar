@@ -14,12 +14,13 @@ public class FireSupply extends AbstractProp{
 
     @Override
     public void activate(HeroAircraft heroAircraft, Game game) {
-        // heroAircraft.activateFireMode(5);
+        // 道具生效
         heroAircraft.setShootStrategy(new ScatterShoot(5));
+        // 道具定时恢复
         PropEffectTimer timer = new PropEffectTimer(2, heroAircraft);
         game.setFireTimer(timer);
         new Thread(timer).start();
-        System.out.println("FireSupply active!");
+        // System.out.println("FireSupply active!");
     }
 
 }

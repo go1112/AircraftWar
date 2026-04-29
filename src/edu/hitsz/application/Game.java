@@ -12,6 +12,8 @@ import edu.hitsz.music.MusicManager;
 import edu.hitsz.music.MusicManager.MusicType;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropEffectTimer;
+import edu.hitsz.prop.PropType;
+import edu.hitsz.prop.observer.ObserverManager;
 import edu.hitsz.rank.Difficulty;
 import edu.hitsz.rank.PlayRecordDao;
 import edu.hitsz.rank.PlayRecordDaoImpl;
@@ -53,7 +55,7 @@ public class Game extends JPanel {
     private final int enemyMaxNumber = 5;
 
     // 敌机生成周期
-    protected double enemySpawnCycle = 20;
+    protected double enemySpawnCycle = 10;
     private int enemySpawnCounter = 0;
 
     // 英雄机和敌机射击周期
@@ -67,11 +69,10 @@ public class Game extends JPanel {
 
     private PropEffectTimer fireTimer;
 
-    public synchronized PropEffectTimer getFireTimer() {
-        return fireTimer;
-    }
-
     public synchronized void setFireTimer(PropEffectTimer fireTimer) {
+        if (this.fireTimer != null) {
+            this.fireTimer.cancel();
+        }
         this.fireTimer = fireTimer;
     }
 
@@ -243,9 +244,10 @@ public class Game extends JPanel {
         enemySpawnCounter++;
         if (enemySpawnCounter >= enemySpawnCycle) {
             enemySpawnCounter = 0;
-            enemyAircrafts.add(
-                    enemyFactories.get(getRandomEnemyType()).createEnemy(getRandomWidth(getRandomEnemyType()),
-                            getRandomHeight()));
+            AbstractAircraft enemyAircraft = enemyFactories.get(getRandomEnemyType()).createEnemy(
+                    getRandomWidth(getRandomEnemyType()),
+                    getRandomHeight());
+            enemyAircrafts.add(enemyAircraft);
         }
 
     }
@@ -324,7 +326,7 @@ public class Game extends JPanel {
                     musicManager.playEffectMusic(MusicType.BULLET_HIT);
                     if (enemyAircraft.notValid()) {
                         triggerReward(enemyAircraft);
-                        if(enemyAircraft instanceof BossEnemy){
+                        if (enemyAircraft instanceof BossEnemy) {
                             musicManager.stopBgmMusic(MusicType.BGM_BOSS);
                             musicManager.playBgmMusic(MusicType.BGM, true);
                         }

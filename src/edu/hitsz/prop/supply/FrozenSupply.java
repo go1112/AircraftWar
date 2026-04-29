@@ -1,10 +1,16 @@
 package edu.hitsz.prop.supply;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Game;
 import edu.hitsz.prop.AbstractProp;
+import edu.hitsz.prop.observer.EnemyObserver;
+import edu.hitsz.prop.observer.PropSubject;
 
-public class FrozenSupply extends AbstractProp {
+public class FrozenSupply extends AbstractProp implements PropSubject {
+    private List<EnemyObserver> observers = new ArrayList<>();
 
     public FrozenSupply(int locationX, int locationY, int speedX, int speedY) {
         super(locationX, locationY, speedX, speedY);
@@ -15,5 +21,21 @@ public class FrozenSupply extends AbstractProp {
         System.out.println("冰冻道具");
     }
 
+    @Override
+    public void addObserver(EnemyObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(EnemyObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (EnemyObserver enemyObserver : observers) {
+            enemyObserver.onBombActivated();
+        }
+    }
 
 }

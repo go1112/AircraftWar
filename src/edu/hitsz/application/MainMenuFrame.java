@@ -2,6 +2,9 @@ package edu.hitsz.application;
 
 import javax.swing.*;
 
+import edu.hitsz.application.game.AbstractGame;
+import edu.hitsz.application.game.BeginningGame;
+import edu.hitsz.application.game.Game;
 import edu.hitsz.rank.Difficulty;
 import edu.hitsz.rank.PlayRecordDao;
 import edu.hitsz.rank.PlayRecordDaoImpl;
@@ -184,6 +187,7 @@ public class MainMenuFrame extends JFrame {
 
         // 创建游戏实例并设置难度
         Game game = new Game(difficulty);
+        // AbstractGame game = new BeginningGame();
 
         gameFrame.add(game);
         gameFrame.setVisible(true);

@@ -1,4 +1,4 @@
-package edu.hitsz.application;
+package edu.hitsz.application.game;
 
 import edu.hitsz.aircraft.*;
 import edu.hitsz.aircraft.factory.AceEnemyFactory;
@@ -7,6 +7,11 @@ import edu.hitsz.aircraft.factory.EliteEnemyFactory;
 import edu.hitsz.aircraft.factory.EnemyFactory;
 import edu.hitsz.aircraft.factory.MobEnemyFactory;
 import edu.hitsz.aircraft.factory.VeteranEnemyFactory;
+import edu.hitsz.application.HeroController;
+import edu.hitsz.application.ImageManager;
+import edu.hitsz.application.HeroController;
+import edu.hitsz.application.Main;
+import edu.hitsz.application.RankingBoard;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.music.MusicManager;
 import edu.hitsz.music.MusicManager.MusicType;
@@ -26,13 +31,11 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 
-/**
- * 游戏主面板，游戏启动
- * 
- * @author hitsz
- */
-public class Game extends JPanel {
-
+@SuppressWarnings("all")
+public abstract class AbstractGame extends JPanel {
+    /**
+     * ! 定义所有游戏子类都会用到的公共属性
+     */
     private int backGroundTop = 0;
 
     // 调度器, 用于定时任务调度
@@ -40,13 +43,13 @@ public class Game extends JPanel {
     // 时间间隔(ms)，控制刷新频率
     private final int timeInterval = 40;
 
-    private final HeroAircraft heroAircraft;
-    private final List<AbstractAircraft> enemyAircrafts; // 多态数组
-    private final List<BaseBullet> heroBullets;
-    private final List<BaseBullet> enemyBullets;
-    private final List<AbstractProp> props;
+    protected final HeroAircraft heroAircraft;
+    protected final List<AbstractAircraft> enemyAircrafts; // 多态数组
+    protected final List<BaseBullet> heroBullets;
+    protected final List<BaseBullet> enemyBullets;
+    protected final List<AbstractProp> props;
 
-    private final Map<EnemyType, EnemyFactory> enemyFactories = new EnumMap<>(EnemyType.class);
+    protected final Map<EnemyType, EnemyFactory> enemyFactories = new EnumMap<>(EnemyType.class);
 
     // 屏幕中出现的敌机最大数量
     private final int enemyMaxNumber = 5;
@@ -60,30 +63,11 @@ public class Game extends JPanel {
     private int shootCounter = 0;
 
     // 当前玩家信息
-    private String playName;
-    private int score = 0;
-    private Difficulty difficulty;
+    protected String playName;
+    protected int score = 0;
+    protected Difficulty difficulty;
 
     private PropEffectTimer fireTimer;
-
-    public void addScore(int points) {
-        this.score += points;
-    }
-
-    public int getScore(){
-        return score;
-    }
-
-    public synchronized void setFireTimer(PropEffectTimer fireTimer) {
-        if (this.fireTimer != null) {
-            this.fireTimer.cancel();
-        }
-        this.fireTimer = fireTimer;
-    }
-
-    public void setDifficulty(Difficulty difficulty) {
-        this.difficulty = difficulty;
-    }
 
     // 游戏结束标志
     private boolean gameOverFlag = false;
@@ -101,116 +85,72 @@ public class Game extends JPanel {
 
     private MusicManager musicManager = MusicManager.getInstance();
 
-    public Game(Difficulty difficulty) {
-        this.difficulty = difficulty;
-        musicManager.playBgmMusic(MusicType.BGM, true);
-        // 确定难度背景
-        backGroundImageRead();
-        // 使用单例模式对heroAircraft初始化
+    /**
+     * ! 设置参数部分
+     */
+
+    public void addScore(int points) {
+        this.score += points;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public synchronized void setFireTimer(PropEffectTimer fireTimer) {
+        if (this.fireTimer != null) {
+            this.fireTimer.cancel();
+        }
+        this.fireTimer = fireTimer;
+    }
+
+    /**
+     * ! 构造器部分
+     */
+    // 通用构造函数（具体方法）
+    public AbstractGame() {
+        // 1. 初始化英雄机（通用）
         HeroAircraft.reset();
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
                 0, 0, 3000);
 
+        // 2. 初始化列表（通用）
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
         enemyBullets = new LinkedList<>();
         props = new LinkedList<>();
 
+        // 3. 初始化工厂映射（通用）
+        initEnemyFactories();
+
+        // 4. 初始化鼠标监听（通用）
+        // new HeroController(this, heroAircraft);
+
+        // 5. 初始化定时器（通用）
+        this.timer = new Timer("game-action-timer", true);
+
+        // 6. 调用抽象方法进行难度相关初始化
+        initGameSettings();
+    }
+
+    // 具体方法：初始化工厂映射
+    private void initEnemyFactories() {
         enemyFactories.put(EnemyType.MOB, new MobEnemyFactory());
         enemyFactories.put(EnemyType.ELITE, new EliteEnemyFactory());
         enemyFactories.put(EnemyType.VETERAN, new VeteranEnemyFactory());
         enemyFactories.put(EnemyType.ACE, new AceEnemyFactory());
         enemyFactories.put(EnemyType.BOSS, new BossEnemyFactory());
-
-        // 启动英雄机鼠标监听
-        new HeroController(this, heroAircraft);
-
-        this.timer = new Timer("game-action-timer", true);
-
     }
 
-    private void backGroundImageRead() {
-        try {
-            switch (difficulty) {
-                case BEGINNER:
-                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg.jpg"));
-                    break;
-                case BASIC:
-                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
-                    break;
-                case INTERMEDIATE:
-                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg3.jpg"));
-                    break;
-                case ADVANCED:
-                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg4.jpg"));
-                    break;
-                case EXPERT:
-                    ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg5.jpg"));
-                    break;
-                default:
-                    break;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    // 随机选择敌机类型（可控制概率）
-    private EnemyType getRandomEnemyType() {
-        double rand = Math.random();
-        if (rand < 0.5)
-            return EnemyType.MOB; // 50% 普通
-        if (rand < 0.7)
-            return EnemyType.ELITE; // 20% 精英
-        if (rand < 0.85)
-            return EnemyType.VETERAN; // 15% 精锐
-        return EnemyType.ACE; // 15% 王牌
-    }
-
-    private int getRandomWidth(EnemyType enemyType) {
-        int imageWidth = 0;
-        switch (enemyType) {
-            case MOB:
-                imageWidth = ImageManager.MOB_ENEMY_IMAGE.getWidth();
-                break;
-            case ELITE:
-                imageWidth = ImageManager.ELITE_ENEMY_IMAGE.getWidth();
-                break;
-            case VETERAN:
-                imageWidth = ImageManager.VETERAN_ENEMY_IMAGE.getWidth();
-            case ACE:
-                imageWidth = ImageManager.ACE_ENEMY_IMAGE.getWidth();
-            case BOSS:
-                imageWidth = ImageManager.BOSS_ENEMY_IMAGE.getWidth();
-            default:
-                break;
-        }
-        return (int) (Math.random() * (Main.WINDOW_WIDTH - imageWidth));
-    }
-
-    private int getRandomHeight() {
-        return (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05);
-    }
-
-    private boolean shouldSpawnBoss() {
-        return !bossSpawned && score >= scoreThreshold && (bossEnemy == null || bossEnemy.notValid());
-    }
-
-    private void spawnBossEnemy() {
-        musicManager.stopBgmMusic(MusicType.BGM);
-        musicManager.playBgmMusic(MusicType.BGM_BOSS, true);
-        bossEnemy = new BossEnemyFactory().createEnemy(getRandomWidth(EnemyType.BOSS), 0);
-        enemyAircrafts.add(bossEnemy);
-        bossSpawned = true;
-    }
+    // 抽象方法：初始化游戏设置（由子类实现）
+    protected abstract void initGameSettings();
 
     /**
-     * 游戏启动入口，执行游戏逻辑
+     * ! 游戏启动入口，执行游戏逻辑，流程骨架
      */
-    public void action() {
+    public final void action() {
 
         // 定时任务：绘制、对象产生、碰撞判定、及结束判定
         TimerTask task = new TimerTask() {
@@ -242,39 +182,140 @@ public class Game extends JPanel {
         };
         // 以固定延迟时间进行执行：本次任务执行完成后，延迟 timeInterval 再执行下一次
         timer.schedule(task, 0, timeInterval);
-
     }
 
-    private void createRandomEnemy() {
-        enemySpawnCounter++;
-        if (enemySpawnCounter >= enemySpawnCycle) {
-            enemySpawnCounter = 0;
-            AbstractAircraft enemyAircraft = enemyFactories.get(getRandomEnemyType()).createEnemy(
-                    getRandomWidth(getRandomEnemyType()),
-                    getRandomHeight());
-            enemyAircrafts.add(enemyAircraft);
+    protected abstract EnemyType getRandomEnemyType();
+
+    /**
+     * ! 获取图片宽度和高度的方法 公用的
+     * 因为这个图片资源没有改变
+     */
+    private int getRandomWidth(EnemyType enemyType) {
+        int imageWidth = 0;
+        switch (enemyType) {
+            case MOB:
+                imageWidth = ImageManager.MOB_ENEMY_IMAGE.getWidth();
+                break;
+            case ELITE:
+                imageWidth = ImageManager.ELITE_ENEMY_IMAGE.getWidth();
+                break;
+            case VETERAN:
+                imageWidth = ImageManager.VETERAN_ENEMY_IMAGE.getWidth();
+            case ACE:
+                imageWidth = ImageManager.ACE_ENEMY_IMAGE.getWidth();
+            case BOSS:
+                imageWidth = ImageManager.BOSS_ENEMY_IMAGE.getWidth();
+            default:
+                break;
         }
-
+        return (int) (Math.random() * (Main.WINDOW_WIDTH - imageWidth));
     }
 
-    // ***********************
-    // Action 各部分
-    // ***********************
+    private int getRandomHeight() {
+        return (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05);
+    }
 
-    private void shootAction() {
-        shootCounter++;
-        if (shootCounter >= shootCycle) {
-            shootCounter = 0;
-            // 英雄机射击
-            heroBullets.addAll(heroAircraft.shoot());
-            // 敌机射击
-            for (AbstractAircraft enemyAircraft : enemyAircrafts) {
-                enemyBullets.addAll(enemyAircraft.shoot());
+    /**
+     * ! BOSS敌机部分
+     */
+
+    /**
+     * 判断是否需要生成BOSS敌机
+     * 
+     * @see 抽象方法
+     */
+    protected abstract boolean shouldSpawnBoss();
+
+    /**
+     * 生成BOSS敌机
+     * 
+     * @see 具体方法中应用了钩子方法
+     *      - 整体逻辑通用 对应 具体方法
+     *      - BOSS敌机的血量设置 对应 钩子方法
+     */
+    protected void spawnBossEnemy() {
+        musicManager.stopBgmMusic(MusicType.BGM);
+        musicManager.playBgmMusic(MusicType.BGM_BOSS, true);
+        bossEnemy = new BossEnemyFactory().createEnemy(getRandomWidth(EnemyType.BOSS), 0);
+        bossEnemy.setHp(setBossEnemyHp());
+        enemyAircrafts.add(bossEnemy);
+        bossSpawned = true;
+    }
+
+    /**
+     * BOSS敌机的血量设置
+     * 
+     * @see 钩子方法 需要具体设置
+     * 
+     */
+    protected int setBossEnemyHp() {
+        return 1000;
+    }
+
+    /**
+     * ! 非BOSS敌机的生成部分
+     */
+
+    /**
+     * 随机生成敌机
+     * 
+     * @see 具体方法中应用抽象方法
+     *      - 敌机生成的周期 和 最大敌机数量 不确定
+     */
+    protected void createRandomEnemy() {
+        enemySpawnCounter++;
+        if (enemySpawnCounter >= getEnemySpawnCycle()) {
+            enemySpawnCounter = 0;
+            if (enemyAircrafts.size() < getEnemyMaxNumber()) {
+                AbstractAircraft enemyAircraft = enemyFactories.get(getRandomEnemyType()).createEnemy(
+                        getRandomWidth(getRandomEnemyType()),
+                        getRandomHeight());
+                enemyAircrafts.add(enemyAircraft);
             }
         }
     }
 
-    private void bulletsMoveAction() {
+    protected abstract int getEnemySpawnCycle();
+
+    protected abstract int getEnemyMaxNumber();
+
+    /**
+     * ! Action部分
+     */
+
+    /**
+     * 射击部分
+     */
+    protected void shootAction() {
+        shootCounter++;
+        if (shootCounter >= getHeroShootCycle()) {
+            heroShoot();
+        }
+        if (shootCounter >= getEnemyShootCycle()) {
+            enemyShoot();
+        }
+    }
+
+    protected abstract int getHeroShootCycle();
+
+    protected abstract int getEnemyShootCycle();
+
+    protected void heroShoot() {
+        // 英雄机射击
+        heroBullets.addAll(heroAircraft.shoot());
+    }
+
+    protected void enemyShoot() {
+        // 敌机射击
+        for (AbstractAircraft enemyAircraft : enemyAircrafts) {
+            enemyBullets.addAll(enemyAircraft.shoot());
+        }
+    }
+
+    /**
+     * 子弹移动部分
+     */
+    protected void bulletsMoveAction() {
         for (BaseBullet bullet : heroBullets) {
             bullet.forward();
         }
@@ -283,25 +324,30 @@ public class Game extends JPanel {
         }
     }
 
-    private void aircraftsMoveAction() {
+    /**
+     * 飞机移动部分
+     */
+    protected void aircraftsMoveAction() {
         for (AbstractAircraft enemyAircraft : enemyAircrafts) {
             enemyAircraft.forward();
         }
     }
 
-    private void propMoveAction() {
+    /**
+     * 道具移动部分
+     */
+    protected void propMoveAction() {
         for (AbstractProp prop : props) {
             prop.forward();
         }
     }
 
     /**
-     * 碰撞检测：
-     * 1. 敌机攻击英雄
-     * 2. 英雄攻击/撞击敌机
-     * 3. 英雄获得补给
+     * ! 碰撞检测部分
      */
-    private void crashCheckAction() {
+
+    protected void crashCheckAction() {
+        // 敌机子弹攻击英雄机
         for (BaseBullet bullet : enemyBullets) {
             if (bullet.notValid()) {
                 continue;
@@ -312,7 +358,7 @@ public class Game extends JPanel {
             }
         }
 
-        // 英雄子弹攻击敌机
+        // 英雄机子弹攻击敌机
         for (BaseBullet bullet : heroBullets) {
             if (bullet.notValid()) {
                 continue;
@@ -353,44 +399,18 @@ public class Game extends JPanel {
             }
             if (prop.crash(heroAircraft)) {
                 musicManager.playEffectMusic(MusicType.GET_SUPPLY);
-                prop.activate(heroAircraft, this);
+                // todo 需要修改 AbstractProp中的 activate的参数类型
+                // prop.activate(heroAircraft, this);
                 prop.vanish();
             }
         }
-
     }
 
-    private void triggerReward(AbstractAircraft enemyAircraft) {
-        if (enemyAircraft instanceof MobEnemy) {
-            score += EnemyType.MOB.getScore();
-        } else if (enemyAircraft instanceof EliteEnemy) {
-            score += EnemyType.ELITE.getScore();
-        } else if (enemyAircraft instanceof VeteranEnemy) {
-            score += EnemyType.VETERAN.getScore();
-        } else if (enemyAircraft instanceof AceEnemy) {
-            score += EnemyType.ACE.getScore();
-        } else {
-            score += EnemyType.BOSS.getScore();
-        }
+    protected abstract void triggerReward(AbstractAircraft enemyAircraft);
 
-        if (!(enemyAircraft instanceof BossEnemy)) {
-            AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, Math.random());
-            if (newProp != null) {
-                props.add(newProp);
-            }
-        } else {
-            for (int i = 0; i < 3; i++) {
-                AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, Math.random());
-                if (newProp != null) {
-                    props.add(newProp);
-                }
-            }
-
-            scoreThreshold = (int) (score * 1.5);
-            bossSpawned = false;
-            // System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
-        }
-    }
+    /**
+     * ! 后处理部分
+     */
 
     /**
      * 后处理：
@@ -472,9 +492,12 @@ public class Game extends JPanel {
         });
     }
 
-    // ***********************
-    // Paint 各部分
-    // ***********************
+    /**
+     * ! paint部分 公用的
+     * 因为画图的逻辑不变 只是要画的东西变了
+     * 但是paint部分只管画图逻辑
+     */
+
     /**
      * 重写 paint方法
      * 通过重复调用paint方法，实现游戏动画

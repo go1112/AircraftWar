@@ -1,7 +1,7 @@
 package edu.hitsz.prop.supply;
 
 import edu.hitsz.aircraft.HeroAircraft;
-import edu.hitsz.application.Game;
+import edu.hitsz.application.game.Game;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropType;
 import edu.hitsz.prop.observer.ObserverManager;

@@ -67,8 +67,8 @@ public class AceEnemy extends AbstractAircraft {
 
     @Override
     public void onBombActivated() {
-        System.out.println("炸弹道具生效 王牌敌机坠毁...");
-        this.vanish();
+        System.out.println("炸弹道具生效 王牌敌机掉血...");
+        decreaseHp(10);
     }
 
     @Override

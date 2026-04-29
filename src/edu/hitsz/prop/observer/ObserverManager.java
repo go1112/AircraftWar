@@ -56,6 +56,17 @@ public class ObserverManager {
 
     }
 
+    public List<EnemyObserver> getObservers(PropType propType) {
+        switch (propType) {
+            case BOMB:
+                return bombObservers;
+            case FROZEN:
+                return frozenObservers;
+            default:
+                return new ArrayList<>();
+        }
+    }
+
     public void notifyObservers(PropType propType) {
         List<EnemyObserver> copyList;
         switch (propType) {

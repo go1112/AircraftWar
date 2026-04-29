@@ -12,10 +12,7 @@ import edu.hitsz.music.MusicManager;
 import edu.hitsz.music.MusicManager.MusicType;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropEffectTimer;
-import edu.hitsz.prop.PropType;
-import edu.hitsz.prop.observer.ObserverManager;
 import edu.hitsz.rank.Difficulty;
-import edu.hitsz.rank.PlayRecordDao;
 import edu.hitsz.rank.PlayRecordDaoImpl;
 import edu.hitsz.basic.AbstractFlyingObject;
 
@@ -68,6 +65,14 @@ public class Game extends JPanel {
     private Difficulty difficulty;
 
     private PropEffectTimer fireTimer;
+
+    public void addScore(int points) {
+        this.score += points;
+    }
+
+    public int getScore(){
+        return score;
+    }
 
     public synchronized void setFireTimer(PropEffectTimer fireTimer) {
         if (this.fireTimer != null) {
@@ -357,15 +362,15 @@ public class Game extends JPanel {
 
     private void triggerReward(AbstractAircraft enemyAircraft) {
         if (enemyAircraft instanceof MobEnemy) {
-            score += 10;
+            score += EnemyType.MOB.getScore();
         } else if (enemyAircraft instanceof EliteEnemy) {
-            score += 20;
+            score += EnemyType.ELITE.getScore();
         } else if (enemyAircraft instanceof VeteranEnemy) {
-            score += 30;
+            score += EnemyType.VETERAN.getScore();
         } else if (enemyAircraft instanceof AceEnemy) {
-            score += 50;
+            score += EnemyType.ACE.getScore();
         } else {
-            score += 100;
+            score += EnemyType.BOSS.getScore();
         }
 
         if (!(enemyAircraft instanceof BossEnemy)) {

@@ -37,15 +37,18 @@ public class MobEnemy extends AbstractAircraft {
         return null;
     }
 
+    /**
+     * 炸弹道具生效 普通敌机坠毁 获得对应分数
+     */
     @Override
     public void onBombActivated() {
-        System.out.println("炸弹道具生效 普通敌机坠毁...");
+        // System.out.println("炸弹道具生效 普通敌机坠毁...");
         this.vanish();
     }
 
     @Override
     public void onFrozenActivated() {
-        System.out.println("炸弹道具生效 普通敌机永久静止...");
+        System.out.println("冰冻道具生效 普通敌机永久静止...");
         this.speedX = 0;
         this.speedY = 0;
     }

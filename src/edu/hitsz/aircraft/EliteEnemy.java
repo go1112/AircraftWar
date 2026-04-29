@@ -5,7 +5,7 @@ import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropFactory;
 import edu.hitsz.prop.PropType;
 
-public class EliteEnemy extends AbstractAircraft{
+public class EliteEnemy extends AbstractAircraft {
 
     public EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
@@ -42,6 +42,16 @@ public class EliteEnemy extends AbstractAircraft{
         }
 
         return newProp;
+    }
+
+    @Override
+    public void onBombActivated() {
+        System.out.println("炸弹道具生效 精英敌机坠毁...");
+    }
+
+    @Override
+    public void onFrozenActivated() {
+        System.out.println("冰冻道具生效 精英敌机静止4s后恢复...");
     }
 
 }

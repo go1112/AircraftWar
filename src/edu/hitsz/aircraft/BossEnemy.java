@@ -43,4 +43,14 @@ public class BossEnemy extends AbstractAircraft {
         return newProp;
 
     }
+
+    @Override
+    public void onBombActivated() {
+        System.out.println("炸弹道具生效 BOSS敌机不受影响...");
+    }
+
+    @Override
+    public void onFrozenActivated() {
+        System.out.println("冰冻道具生效 BOSS敌机不受影响...");
+    }
 }

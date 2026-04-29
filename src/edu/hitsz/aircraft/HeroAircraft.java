@@ -23,7 +23,7 @@ public class HeroAircraft extends AbstractAircraft {
         this.setShootStrategy(new StraightShoot(shootNum));
     }
 
-    public static void reset(){
+    public static void reset() {
         instance = null;
     }
 
@@ -56,5 +56,15 @@ public class HeroAircraft extends AbstractAircraft {
     @Override
     public AbstractProp obtainProp(AbstractAircraft enemyAircraft, double rand) {
         return null;
+    }
+
+    @Override
+    public void onBombActivated() {
+        System.out.println("炸弹道具生效 英雄机不受影响...");
+    }
+
+    @Override
+    public void onFrozenActivated() {
+        System.out.println("冰冻道具生效 英雄机不受影响...");
     }
 }

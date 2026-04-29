@@ -204,7 +204,7 @@ public class MainMenuFrame extends JFrame {
                 options, // 自定义按钮文本数组
                 options[0] // 默认选中第一个按钮
         );
-        if(result < 0 || result >= 5){
+        if (result < 0 || result >= 5) {
             return;
         }
         dispose();

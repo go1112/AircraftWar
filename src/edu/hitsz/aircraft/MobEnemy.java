@@ -12,7 +12,7 @@ import java.util.List;
  * 
  * @author hitsz
  */
-public class MobEnemy extends AbstractAircraft{
+public class MobEnemy extends AbstractAircraft {
 
     public MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
@@ -35,5 +35,15 @@ public class MobEnemy extends AbstractAircraft{
     @Override
     public AbstractProp obtainProp(AbstractAircraft enemyAircraft, double rand) {
         return null;
+    }
+
+    @Override
+    public void onBombActivated() {
+        System.out.println("炸弹道具生效 普通敌机坠毁...");
+    }
+
+    @Override
+    public void onFrozenActivated() {
+        System.out.println("炸弹道具生效 普通敌机永久静止...");
     }
 }

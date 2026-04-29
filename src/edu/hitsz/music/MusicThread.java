@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import javax.sound.sampled.*;
 
-import edu.hitsz.music.MusicManager.MusicType;
-
 public class MusicThread extends Thread {
     private String filePath;
     private boolean loop;

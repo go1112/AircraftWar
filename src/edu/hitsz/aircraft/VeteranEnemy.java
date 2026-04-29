@@ -4,7 +4,9 @@ import edu.hitsz.application.Main;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropFactory;
 import edu.hitsz.prop.PropType;
-
+/**
+ * 精锐敌机
+ */
 public class VeteranEnemy extends AbstractAircraft {
 
     public VeteranEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
@@ -12,7 +14,6 @@ public class VeteranEnemy extends AbstractAircraft {
         this.power = 5;
         this.direction = 1;
     }
-
 
     @Override
     public void forward() {
@@ -45,6 +46,16 @@ public class VeteranEnemy extends AbstractAircraft {
         }
 
         return newProp;
+    }
+
+    @Override
+    public void onBombActivated() {
+        System.out.println("炸弹道具生效 精锐敌机坠毁...");
+    }
+
+    @Override
+    public void onFrozenActivated() {
+        System.out.println("炸弹道具生效 精锐敌机静止3s后恢复...");
     }
 
 }

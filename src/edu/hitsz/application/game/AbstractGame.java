@@ -120,8 +120,7 @@ public abstract class AbstractGame extends JPanel {
      * ! 构造器部分
      */
     // 通用构造函数（具体方法）
-    public AbstractGame(Difficulty difficulty) {
-        this.difficulty = difficulty;
+    public AbstractGame() {
         musicManager.playBgmMusic(MusicType.BGM, true);
 
         // 调用抽象方法进行难度相关初始化

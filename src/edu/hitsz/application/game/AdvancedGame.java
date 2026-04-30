@@ -12,17 +12,17 @@ import edu.hitsz.application.ImageManager;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.rank.Difficulty;
 
-public class BasicGame extends AbstractGame {
+public class AdvancedGame extends AbstractGame{
 
-    public BasicGame() {
+    public AdvancedGame() {
         super();
-        this.difficulty = Difficulty.BASIC;
+        this.difficulty = Difficulty.ADVANCED;
     }
 
     @Override
     protected void initGameSettings() {
         try {
-            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
+            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg4.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }

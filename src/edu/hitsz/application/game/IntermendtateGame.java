@@ -12,17 +12,17 @@ import edu.hitsz.application.ImageManager;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.rank.Difficulty;
 
-public class BasicGame extends AbstractGame {
+public class IntermendtateGame extends AbstractGame {
 
-    public BasicGame() {
+    public IntermendtateGame() {
         super();
-        this.difficulty = Difficulty.BASIC;
+        this.difficulty = Difficulty.INTERMEDIATE;
     }
 
     @Override
     protected void initGameSettings() {
         try {
-            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
+            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg3.jpg"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,13 +63,13 @@ public class BasicGame extends AbstractGame {
     protected void triggerProp(AbstractAircraft enemyAircraft) {
 
         if (!(enemyAircraft instanceof BossEnemy)) {
-            AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft,propRand);
+            AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, propRand);
             if (newProp != null) {
                 props.add(newProp);
             }
         } else {
             for (int i = 0; i < 3; i++) {
-                AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft,1.0);
+                AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, 1.0);
                 if (newProp != null) {
                     props.add(newProp);
                 }
@@ -89,11 +89,10 @@ public class BasicGame extends AbstractGame {
         this.enemyHpFactor = Math.min(2, this.enemyHpFactor * 1.1);
         this.enemySpeedFactor = Math.min(2, this.enemySpeedFactor * 1.1);
         System.out.println("==========提高难度===========");
-        System.out.println(String.format("敌机最大数量 = %d 个",enemyMaxNumber));
-        System.out.println(String.format("敌机产生周期 = %.2f 秒",(double) enemySpawnCycle * 50 / 1000));
-        System.out.println(String.format("敌机血量增值 = %.2f 倍",enemyHpFactor));
-        System.out.println(String.format("敌机速度增值 = %.2f 倍",enemySpeedFactor));
+        System.out.println(String.format("敌机最大数量 = %d 个", enemyMaxNumber));
+        System.out.println(String.format("敌机产生周期 = %.2f 秒", (double) enemySpawnCycle * 50 / 1000));
+        System.out.println(String.format("敌机血量增值 = %.2f 倍", enemyHpFactor));
+        System.out.println(String.format("敌机速度增值 = %.2f 倍", enemySpeedFactor));
         System.out.println("============================");
     }
-
 }

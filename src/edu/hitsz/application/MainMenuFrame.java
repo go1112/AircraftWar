@@ -3,9 +3,12 @@ package edu.hitsz.application;
 import javax.swing.*;
 
 import edu.hitsz.application.game.AbstractGame;
+import edu.hitsz.application.game.AdvancedGame;
 import edu.hitsz.application.game.BasicGame;
 import edu.hitsz.application.game.BeginningGame;
+import edu.hitsz.application.game.ExpertGame;
 import edu.hitsz.application.game.Game;
+import edu.hitsz.application.game.IntermendtateGame;
 import edu.hitsz.rank.Difficulty;
 import edu.hitsz.rank.PlayRecordDao;
 import edu.hitsz.rank.PlayRecordDaoImpl;
@@ -191,19 +194,19 @@ public class MainMenuFrame extends JFrame {
         AbstractGame game = null;
         switch (difficulty) {
             case BEGINNER:
-                game = new BeginningGame(Difficulty.BEGINNER);
+                game = new BeginningGame();
                 break;
             case BASIC:
-                game = new BasicGame(Difficulty.BASIC);
+                game = new BasicGame();
                 break;
             case INTERMEDIATE:
-                game = new BasicGame(Difficulty.BASIC);
+                game = new IntermendtateGame();
                 break;
             case ADVANCED:
-                game = new BasicGame(Difficulty.BASIC);
+                game = new AdvancedGame();
                 break;
             case EXPERT:
-                game = new BasicGame(Difficulty.BASIC);
+                game = new ExpertGame();
                 break;
             default:
                 break;

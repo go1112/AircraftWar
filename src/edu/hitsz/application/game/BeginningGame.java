@@ -13,8 +13,9 @@ import edu.hitsz.rank.Difficulty;
 
 public class BeginningGame extends AbstractGame {
 
-    public BeginningGame(Difficulty difficulty) {
-        super(difficulty);
+    public BeginningGame() {
+        super();
+        this.difficulty = Difficulty.BEGINNER;
     }
 
     @Override

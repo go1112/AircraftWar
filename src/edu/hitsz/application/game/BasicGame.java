@@ -6,11 +6,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import edu.hitsz.aircraft.AbstractAircraft;
-import edu.hitsz.aircraft.AceEnemy;
-import edu.hitsz.aircraft.EliteEnemy;
+import edu.hitsz.aircraft.BossEnemy;
 import edu.hitsz.aircraft.EnemyType;
-import edu.hitsz.aircraft.MobEnemy;
-import edu.hitsz.aircraft.VeteranEnemy;
 import edu.hitsz.application.ImageManager;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.rank.Difficulty;
@@ -28,44 +25,74 @@ public class BasicGame extends AbstractGame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.initHeroHp = 500;
+
+        this.enemyMaxNumber = 8;
+        this.enemySpawnCycle = 20;
+        this.heroShootCycle = 20;
+        this.enemyShootCycle = 20;
+        this.enemyHpFactor = 1.0;
+        this.enemySpeedFactor = 1.0;
+
+        this.scoreThreshold = 1000;
+
+        this.propRand = 0.8;
+        this.difficultyLevelUpInterval = 3000; // 每2分钟提高游戏难度
     }
 
     @Override
     protected EnemyType getRandomEnemyType() {
         double rand = Math.random();
-        if (rand < 0.3)
-            return EnemyType.MOB; // 30% 普通
-        if (rand < 0.6)
-            return EnemyType.ELITE; // 30% 精英
-        if (rand < 0.8)
-            return EnemyType.VETERAN; // 20% 精锐
-        return EnemyType.ACE; // 20% 王牌
+        if (rand < 0.5)
+            return EnemyType.MOB; // 50% 普通
+        if (rand < 0.75)
+            return EnemyType.ELITE; // 25% 精英
+        if (rand < 0.90)
+            return EnemyType.VETERAN; // 15% 精锐
+        return EnemyType.ACE; // 10% 王牌
     }
 
     @Override
     protected boolean shouldSpawnBoss() {
-        return false;
+        return !bossSpawned && score >= scoreThreshold && (bossEnemy == null || bossEnemy.notValid());
     }
 
+    @Override
+    protected void triggerProp(AbstractAircraft enemyAircraft) {
+
+        if (!(enemyAircraft instanceof BossEnemy)) {
+            AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft,propRand);
+            if (newProp != null) {
+                props.add(newProp);
+            }
+        } else {
+            for (int i = 0; i < 3; i++) {
+                AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft,1.0);
+                if (newProp != null) {
+                    props.add(newProp);
+                }
+            }
+
+            scoreThreshold = (int) (score * 1.5);
+            bossSpawned = false;
+            // System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
+        }
+
+    }
 
     @Override
-    protected void triggerReward(AbstractAircraft enemyAircraft) {
-        if (enemyAircraft instanceof MobEnemy) {
-            addScore(EnemyType.MOB.getScore());
-        } else if (enemyAircraft instanceof EliteEnemy) {
-            addScore(EnemyType.ELITE.getScore());
-        } else if (enemyAircraft instanceof VeteranEnemy) {
-            addScore(EnemyType.VETERAN.getScore());
-        } else if (enemyAircraft instanceof AceEnemy) {
-            addScore(EnemyType.ACE.getScore());
-        } else {
-            addScore(EnemyType.BOSS.getScore());
-        }
-
-        AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, Math.random());
-        if (newProp != null) {
-            props.add(newProp);
-        }
+    protected void difficultyLevelUp() {
+        this.enemyMaxNumber = Math.min(15, this.enemyMaxNumber + 1);
+        this.enemySpawnCycle = Math.max(10, this.enemySpawnCycle * 0.9);
+        this.enemyHpFactor = Math.min(2, this.enemyHpFactor * 1.1);
+        this.enemySpeedFactor = Math.min(2, this.enemySpeedFactor * 1.1);
+        System.out.println("==========提高难度===========");
+        System.out.println(String.format("敌机最大数量 = %d 个",enemyMaxNumber));
+        System.out.println(String.format("敌机产生周期 = %.2f 秒",(double) enemySpawnCycle * 50 / 1000));
+        System.out.println(String.format("敌机血量增值 = %.2f 倍",enemyHpFactor));
+        System.out.println(String.format("敌机速度增值 = %.2f 倍",enemySpeedFactor));
+        System.out.println("============================");
     }
 
 }

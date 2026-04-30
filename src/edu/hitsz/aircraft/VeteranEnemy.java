@@ -46,15 +46,16 @@ public class VeteranEnemy extends AbstractAircraft {
 
     @Override
     public AbstractProp obtainProp(AbstractAircraft enemyAircraft, double rand) {
+        if (rand < Math.random()) {
+            return null;
+        }
+        
         int propX = enemyAircraft.getLocationX();
         int propY = enemyAircraft.getLocationY();
         AbstractProp newProp = null;
-        double veteranEnemyRand = 1;
+        // 状态：rand >= Math.random()
+        // eg. rand = 0.8 则产生道具的概率为 80%
         double typeRandom = Math.random();
-        if (rand > veteranEnemyRand) {
-            return null;
-        }
-
         if (typeRandom < 0.3) {
             newProp = PropFactory.createProp(PropType.HP, propX, propY);
         } else if (typeRandom < 0.6) {
@@ -70,13 +71,13 @@ public class VeteranEnemy extends AbstractAircraft {
 
     @Override
     public void onBombActivated() {
-        System.out.println("炸弹道具生效 精锐敌机坠毁...");
+        // System.out.println("炸弹道具生效 精锐敌机坠毁...");
         this.vanish();
     }
 
     @Override
     public void onFrozenActivated() {
-        System.out.println("炸弹道具生效 精锐敌机静止3s后恢复...");
+        // System.out.println("炸弹道具生效 精锐敌机静止3s后恢复...");
         if (isSlow) {
             // 状态：已经处于减速状态
             // 执行：取消上一次的恢复任务 刷新定时结束时间

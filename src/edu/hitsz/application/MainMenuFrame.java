@@ -3,6 +3,7 @@ package edu.hitsz.application;
 import javax.swing.*;
 
 import edu.hitsz.application.game.AbstractGame;
+import edu.hitsz.application.game.BasicGame;
 import edu.hitsz.application.game.BeginningGame;
 import edu.hitsz.application.game.Game;
 import edu.hitsz.rank.Difficulty;
@@ -187,7 +188,26 @@ public class MainMenuFrame extends JFrame {
 
         // 创建游戏实例并设置难度
         // Game game = new Game(difficulty);
-        AbstractGame game = new BeginningGame(Difficulty.BEGINNER);
+        AbstractGame game = null;
+        switch (difficulty) {
+            case BEGINNER:
+                game = new BeginningGame(Difficulty.BEGINNER);
+                break;
+            case BASIC:
+                game = new BasicGame(Difficulty.BASIC);
+                break;
+            case INTERMEDIATE:
+                game = new BasicGame(Difficulty.BASIC);
+                break;
+            case ADVANCED:
+                game = new BasicGame(Difficulty.BASIC);
+                break;
+            case EXPERT:
+                game = new BasicGame(Difficulty.BASIC);
+                break;
+            default:
+                break;
+        }
 
         gameFrame.add(game);
         gameFrame.setVisible(true);

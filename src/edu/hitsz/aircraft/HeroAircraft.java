@@ -14,7 +14,6 @@ public class HeroAircraft extends AbstractAircraft {
 
     // 每次射击发射子弹数量
     private int shootNum = 3;
-    private int score = 0;
 
     // 构造器私有化 把构造权掌握在自己手中
     private HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
@@ -22,10 +21,6 @@ public class HeroAircraft extends AbstractAircraft {
         this.power = 30;
         this.direction = -1;
         this.setShootStrategy(new StraightShoot(shootNum));
-    }
-
-    public void addScore(int points) {
-        this.score += points;
     }
 
     public static void reset() {

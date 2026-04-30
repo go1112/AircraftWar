@@ -26,7 +26,7 @@ public class AceEnemy extends AbstractAircraft {
     @Override
     public void vanish() {
         // 在敌机消失前 先要释放定时器资源
-        if(scheduler != null){
+        if (scheduler != null) {
             scheduler.shutdownNow();
         }
         super.vanish();
@@ -43,14 +43,15 @@ public class AceEnemy extends AbstractAircraft {
 
     @Override
     public AbstractProp obtainProp(AbstractAircraft enemyAircraft, double rand) {
+        if (rand < Math.random()) {
+            return null;
+        }
+
         int propX = enemyAircraft.getLocationX();
         int propY = enemyAircraft.getLocationY();
         AbstractProp newProp = null;
-        double aceEnemyRand = 1;
         double typeRandom = Math.random();
-        if (rand > aceEnemyRand) {
-            return null;
-        }
+
         if (typeRandom < 0.3) {
             newProp = PropFactory.createProp(PropType.HP, propX, propY);
         } else if (typeRandom < 0.6) {
@@ -67,21 +68,21 @@ public class AceEnemy extends AbstractAircraft {
 
     @Override
     public void onBombActivated() {
-        System.out.println("炸弹道具生效 王牌敌机掉血...");
+        // System.out.println("炸弹道具生效 王牌敌机掉血...");
         decreaseHp(10);
     }
 
     @Override
     public void onFrozenActivated() {
-        System.out.println("冰冻道具生效 王牌敌机减速3s后恢复...");
-        if(isSlow){
+        // System.out.println("冰冻道具生效 王牌敌机减速3s后恢复...");
+        if (isSlow) {
             // 状态：已经处于减速状态
             // 执行：取消上一次的恢复任务 刷新定时结束时间
-            if(recoveryTask != null && !recoveryTask.isDone()){
+            if (recoveryTask != null && !recoveryTask.isDone()) {
                 // 状态：已经处于减速状态 而且还没有恢复
                 recoveryTask.cancel(false);
             }
-        }else{
+        } else {
             // 状态：未处于减速状态
             // 执行：保留原始速度 确认进入减速状态
             originalSpeedX = this.speedX;
@@ -92,7 +93,7 @@ public class AceEnemy extends AbstractAircraft {
         this.speedX = originalSpeedX / 2;
         this.speedY = originalSpeedY / 2;
 
-        recoveryTask = scheduler.schedule(()->{
+        recoveryTask = scheduler.schedule(() -> {
             // 状态：已经延迟3秒了 可以恢复原速度了
             this.speedX = originalSpeedX;
             this.speedY = originalSpeedY;

@@ -6,22 +6,32 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import edu.hitsz.aircraft.AbstractAircraft;
-import edu.hitsz.aircraft.AceEnemy;
-import edu.hitsz.aircraft.BossEnemy;
-import edu.hitsz.aircraft.EliteEnemy;
 import edu.hitsz.aircraft.EnemyType;
-import edu.hitsz.aircraft.MobEnemy;
-import edu.hitsz.aircraft.VeteranEnemy;
 import edu.hitsz.application.ImageManager;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.rank.Difficulty;
 
 public class BeginningGame extends AbstractGame {
 
-    
-
     public BeginningGame(Difficulty difficulty) {
         super(difficulty);
+    }
+
+    @Override
+    protected void initGameSettings() {
+        try {
+            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        this.initHeroHp = 300;
+        this.enemyMaxNumber = 5;
+        this.enemySpawnCycle = 20;
+        this.heroShootCycle = 15;
+        this.enemyShootCycle = 20;
+        this.enemyHpFactor = 0.7;
+        this.enemySpeedFactor = 0.8;
     }
 
     @Override
@@ -37,19 +47,7 @@ public class BeginningGame extends AbstractGame {
     }
 
     @Override
-    protected void triggerReward(AbstractAircraft enemyAircraft) {
-        if (enemyAircraft instanceof MobEnemy) {
-            addScore(EnemyType.MOB.getScore());
-        } else if (enemyAircraft instanceof EliteEnemy) {
-            addScore(EnemyType.ELITE.getScore());
-        } else if (enemyAircraft instanceof VeteranEnemy) {
-            addScore(EnemyType.VETERAN.getScore());
-        } else if (enemyAircraft instanceof AceEnemy) {
-            addScore(EnemyType.ACE.getScore());
-        } else {
-            addScore(EnemyType.BOSS.getScore());
-        }
-
+    protected void triggerProp(AbstractAircraft enemyAircraft) {
         AbstractProp newProp = enemyAircraft.obtainProp(enemyAircraft, Math.random());
         if (newProp != null) {
             props.add(newProp);
@@ -60,22 +58,6 @@ public class BeginningGame extends AbstractGame {
     @Override
     protected boolean shouldSpawnBoss() {
         return false;
-    }
-
-    @Override
-    protected void initGameSettings() {
-        try {
-            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        this.enemyMaxNumber = 5;
-        this.enemySpawnCycle = 20;
-        this.heroShootCycle = 15;
-        this.enemyShootCycle = 20;
-        this.enemyHpFactor = 0.7;
-        this.enemySpeedFactor = 0.8;
     }
 
 }

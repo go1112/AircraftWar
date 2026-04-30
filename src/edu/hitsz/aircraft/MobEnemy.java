@@ -48,7 +48,7 @@ public class MobEnemy extends AbstractAircraft {
 
     @Override
     public void onFrozenActivated() {
-        System.out.println("冰冻道具生效 普通敌机永久静止...");
+        // System.out.println("冰冻道具生效 普通敌机永久静止...");
         this.speedX = 0;
         this.speedY = 0;
     }

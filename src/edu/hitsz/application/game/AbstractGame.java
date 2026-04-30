@@ -42,8 +42,12 @@ public abstract class AbstractGame extends JPanel {
     private final Timer timer;
     // 时间间隔(ms)，控制刷新频率
     private final int timeInterval = 50;
+    protected long gameTime = 0;
+    protected int difficultyLevelUpInterval = 0;
 
     protected final HeroAircraft heroAircraft;
+    protected int initHeroHp = 200;
+
     protected final List<AbstractAircraft> enemyAircrafts; // 多态数组
     protected final List<BaseBullet> heroBullets;
     protected final List<BaseBullet> enemyBullets;
@@ -57,6 +61,9 @@ public abstract class AbstractGame extends JPanel {
     // 敌机生成周期
     protected double enemySpawnCycle = 10;
     private int enemySpawnCounter = 0;
+
+    // 道具生成概率
+    protected double propRand;
 
     // 英雄机和敌机射击周期
     protected int heroShootCycle = 10;
@@ -78,11 +85,11 @@ public abstract class AbstractGame extends JPanel {
     private boolean gameOverFlag = false;
 
     // Boss机产生标志
-    private boolean bossSpawned = false;
+    protected boolean bossSpawned = false;
     // Boss机产生的分数阈值器
-    private int scoreThreshold = 500;
+    protected int scoreThreshold = 500;
     // Boss机
-    private AbstractAircraft bossEnemy = null;
+    protected AbstractAircraft bossEnemy = null;
 
     // 排行榜功能类
     PlayRecordDaoImpl playRecordDao = new PlayRecordDaoImpl(new ArrayList<>());
@@ -116,12 +123,16 @@ public abstract class AbstractGame extends JPanel {
     public AbstractGame(Difficulty difficulty) {
         this.difficulty = difficulty;
         musicManager.playBgmMusic(MusicType.BGM, true);
+
+        // 调用抽象方法进行难度相关初始化
+        initGameSettings();
+
         // 1. 初始化英雄机（通用）
         HeroAircraft.reset();
         heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
-                0, 0, 3000);
+                0, 0, initHeroHp);
 
         // 2. 初始化列表（通用）
         enemyAircrafts = new LinkedList<>();
@@ -138,12 +149,11 @@ public abstract class AbstractGame extends JPanel {
         // 5. 初始化定时器（通用）
         this.timer = new Timer("game-action-timer", true);
 
-        // 6. 调用抽象方法进行难度相关初始化
-        initGameSettings();
     }
 
     // 具体方法：初始化工厂映射
     private void initEnemyFactories() {
+        enemyAircrafts.clear();
         enemyFactories.put(EnemyType.MOB, new MobEnemyFactory(enemyHpFactor, enemySpeedFactor));
         enemyFactories.put(EnemyType.ELITE, new EliteEnemyFactory(enemyHpFactor, enemySpeedFactor));
         enemyFactories.put(EnemyType.VETERAN, new VeteranEnemyFactory(enemyHpFactor, enemySpeedFactor));
@@ -163,6 +173,13 @@ public abstract class AbstractGame extends JPanel {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
+                gameTime++;
+
+                if (shouldLevelUp()) {
+                    difficultyLevelUp();
+                    initEnemyFactories();
+                }
+
                 createRandomEnemy();
 
                 if (shouldSpawnBoss()) {
@@ -189,6 +206,13 @@ public abstract class AbstractGame extends JPanel {
         };
         // 以固定延迟时间进行执行：本次任务执行完成后，延迟 timeInterval 再执行下一次
         timer.schedule(task, 0, timeInterval);
+    }
+
+    private boolean shouldLevelUp() {
+        return difficultyLevelUpInterval != 0 && gameTime % difficultyLevelUpInterval == 0;
+    }
+
+    protected void difficultyLevelUp() {
     }
 
     protected abstract EnemyType getRandomEnemyType();
@@ -379,7 +403,10 @@ public abstract class AbstractGame extends JPanel {
                     bullet.vanish();
                     musicManager.playEffectMusic(MusicType.BULLET_HIT);
                     if (enemyAircraft.notValid()) {
-                        triggerReward(enemyAircraft);
+                        // 添加分数
+                        addGameScore(enemyAircraft);
+                        // 触发道具
+                        triggerProp(enemyAircraft);
                         if (enemyAircraft instanceof BossEnemy) {
                             musicManager.stopBgmMusic(MusicType.BGM_BOSS);
                             musicManager.playBgmMusic(MusicType.BGM, true);
@@ -402,14 +429,27 @@ public abstract class AbstractGame extends JPanel {
             }
             if (prop.crash(heroAircraft)) {
                 musicManager.playEffectMusic(MusicType.GET_SUPPLY);
-                // todo 需要修改 AbstractProp中的 activate的参数类型
                 prop.activate(heroAircraft, this);
                 prop.vanish();
             }
         }
     }
 
-    protected abstract void triggerReward(AbstractAircraft enemyAircraft);
+    private void addGameScore(AbstractAircraft enemyAircraft) {
+        if (enemyAircraft instanceof MobEnemy) {
+            addScore(EnemyType.MOB.getScore());
+        } else if (enemyAircraft instanceof EliteEnemy) {
+            addScore(EnemyType.ELITE.getScore());
+        } else if (enemyAircraft instanceof VeteranEnemy) {
+            addScore(EnemyType.VETERAN.getScore());
+        } else if (enemyAircraft instanceof AceEnemy) {
+            addScore(EnemyType.ACE.getScore());
+        } else {
+            addScore(EnemyType.BOSS.getScore());
+        }
+    }
+
+    protected abstract void triggerProp(AbstractAircraft enemyAircraft);
 
     /**
      * ! 后处理部分

@@ -1,6 +1,7 @@
 package edu.hitsz.prop.supply;
 
 import edu.hitsz.aircraft.HeroAircraft;
+import edu.hitsz.application.game.AbstractGame;
 import edu.hitsz.application.game.Game;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropType;
@@ -13,7 +14,7 @@ public class FrozenSupply extends AbstractProp {
     }
 
     @Override
-    public void activate(HeroAircraft heroAircraft, Game game) {
+    public void activate(HeroAircraft heroAircraft, AbstractGame game) {
         System.out.println("冰冻道具");
         ObserverManager.getInstance().notifyObservers(PropType.FROZEN);
     }

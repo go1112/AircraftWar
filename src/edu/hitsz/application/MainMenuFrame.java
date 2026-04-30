@@ -186,8 +186,8 @@ public class MainMenuFrame extends JFrame {
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // 创建游戏实例并设置难度
-        Game game = new Game(difficulty);
-        // AbstractGame game = new BeginningGame();
+        // Game game = new Game(difficulty);
+        AbstractGame game = new BeginningGame(Difficulty.BEGINNER);
 
         gameFrame.add(game);
         gameFrame.setVisible(true);

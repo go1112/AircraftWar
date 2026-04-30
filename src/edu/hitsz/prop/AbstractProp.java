@@ -2,6 +2,7 @@ package edu.hitsz.prop;
 
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Main;
+import edu.hitsz.application.game.AbstractGame;
 import edu.hitsz.application.game.Game;
 import edu.hitsz.basic.AbstractFlyingObject;
 
@@ -26,5 +27,5 @@ public abstract class AbstractProp extends AbstractFlyingObject {
      * @param heroAircraft 英雄机实例，道具效果作用于此
      * @param game         游戏实例，用于访问游戏状态（如敌机列表、分数等）
      */
-    public abstract void activate(HeroAircraft heroAircraft, Game game);
+    public abstract void activate(HeroAircraft heroAircraft, AbstractGame game);
 }

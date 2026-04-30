@@ -6,6 +6,7 @@ import edu.hitsz.aircraft.EnemyType;
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.aircraft.MobEnemy;
 import edu.hitsz.aircraft.VeteranEnemy;
+import edu.hitsz.application.game.AbstractGame;
 import edu.hitsz.application.game.Game;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropType;
@@ -28,7 +29,7 @@ public class BombSupply extends AbstractProp {
     }
 
     @Override
-    public void activate(HeroAircraft heroAircraft, Game game) {
+    public void activate(HeroAircraft heroAircraft, AbstractGame game) {
         // System.out.println("爆炸道具..");
         ObserverManager observerManager = ObserverManager.getInstance();
         // System.out.println(game.getScore());

@@ -129,7 +129,7 @@ public class Game extends JPanel {
         enemyFactories.put(EnemyType.BOSS, new BossEnemyFactory());
 
         // 启动英雄机鼠标监听
-        new HeroController(this, heroAircraft);
+        // new HeroController(this, heroAircraft);
 
         this.timer = new Timer("game-action-timer", true);
 

@@ -1,6 +1,7 @@
 package edu.hitsz.prop.supply;
 
 import edu.hitsz.aircraft.HeroAircraft;
+import edu.hitsz.application.game.AbstractGame;
 import edu.hitsz.application.game.Game;
 import edu.hitsz.prop.AbstractProp;
 
@@ -12,7 +13,7 @@ public class HpSupply extends AbstractProp {
     }
 
     @Override
-    public void activate(HeroAircraft heroAircraft, Game game) {
+    public void activate(HeroAircraft heroAircraft, AbstractGame game) {
         int curHp = heroAircraft.getHp();
         int maxHp = heroAircraft.getMaxHp();
         heroAircraft.setHp(Math.min(maxHp, curHp + recoverHp));

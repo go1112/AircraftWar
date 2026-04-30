@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 
 import edu.hitsz.aircraft.AbstractAircraft;
 import edu.hitsz.aircraft.AceEnemy;
-import edu.hitsz.aircraft.BossEnemy;
 import edu.hitsz.aircraft.EliteEnemy;
 import edu.hitsz.aircraft.EnemyType;
 import edu.hitsz.aircraft.MobEnemy;
@@ -16,25 +15,38 @@ import edu.hitsz.application.ImageManager;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.rank.Difficulty;
 
-public class BeginningGame extends AbstractGame {
+public class BasicGame extends AbstractGame {
 
-    
-
-    public BeginningGame(Difficulty difficulty) {
+    public BasicGame(Difficulty difficulty) {
         super(difficulty);
+    }
+
+    @Override
+    protected void initGameSettings() {
+        try {
+            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected EnemyType getRandomEnemyType() {
         double rand = Math.random();
-        if (rand < 0.7)
-            return EnemyType.MOB; // 70% 普通
-        if (rand < 0.9)
-            return EnemyType.ELITE; // 20% 精英
-        if (rand < 0.98)
-            return EnemyType.VETERAN; // 8% 精锐
-        return EnemyType.ACE; // 2% 王牌
+        if (rand < 0.3)
+            return EnemyType.MOB; // 30% 普通
+        if (rand < 0.6)
+            return EnemyType.ELITE; // 30% 精英
+        if (rand < 0.8)
+            return EnemyType.VETERAN; // 20% 精锐
+        return EnemyType.ACE; // 20% 王牌
     }
+
+    @Override
+    protected boolean shouldSpawnBoss() {
+        return false;
+    }
+
 
     @Override
     protected void triggerReward(AbstractAircraft enemyAircraft) {
@@ -54,28 +66,6 @@ public class BeginningGame extends AbstractGame {
         if (newProp != null) {
             props.add(newProp);
         }
-
-    }
-
-    @Override
-    protected boolean shouldSpawnBoss() {
-        return false;
-    }
-
-    @Override
-    protected void initGameSettings() {
-        try {
-            ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        this.enemyMaxNumber = 5;
-        this.enemySpawnCycle = 20;
-        this.heroShootCycle = 15;
-        this.enemyShootCycle = 20;
-        this.enemyHpFactor = 0.7;
-        this.enemySpeedFactor = 0.8;
     }
 
 }

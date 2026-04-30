@@ -1,6 +1,7 @@
 package edu.hitsz.prop.supply;
 
 import edu.hitsz.aircraft.HeroAircraft;
+import edu.hitsz.application.game.AbstractGame;
 import edu.hitsz.application.game.Game;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropEffectTimer;
@@ -13,7 +14,7 @@ public class FirePlusSupply extends AbstractProp {
     }
 
     @Override
-    public void activate(HeroAircraft heroAircraft, Game game) {
+    public void activate(HeroAircraft heroAircraft, AbstractGame game) {
         // 道具生效
         heroAircraft.setShootStrategy(new RingShoot(20));
         // 道具定时恢复

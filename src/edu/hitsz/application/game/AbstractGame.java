@@ -41,7 +41,7 @@ public abstract class AbstractGame extends JPanel {
     // 调度器, 用于定时任务调度
     private final Timer timer;
     // 时间间隔(ms)，控制刷新频率
-    private final int timeInterval = 40;
+    private final int timeInterval = 50;
 
     protected final HeroAircraft heroAircraft;
     protected final List<AbstractAircraft> enemyAircrafts; // 多态数组
@@ -52,15 +52,20 @@ public abstract class AbstractGame extends JPanel {
     protected final Map<EnemyType, EnemyFactory> enemyFactories = new EnumMap<>(EnemyType.class);
 
     // 屏幕中出现的敌机最大数量
-    private final int enemyMaxNumber = 5;
+    protected int enemyMaxNumber = 5;
 
     // 敌机生成周期
     protected double enemySpawnCycle = 10;
     private int enemySpawnCounter = 0;
 
     // 英雄机和敌机射击周期
-    protected double shootCycle = 20;
-    private int shootCounter = 0;
+    protected int heroShootCycle = 10;
+    protected int enemyShootCycle = 10;
+    private int enemyShootCounter = 0;
+    private int heroShootCounter = 0;
+
+    protected double enemyHpFactor = 1.0;
+    protected double enemySpeedFactor = 1.0;
 
     // 当前玩家信息
     protected String playName;
@@ -108,7 +113,9 @@ public abstract class AbstractGame extends JPanel {
      * ! 构造器部分
      */
     // 通用构造函数（具体方法）
-    public AbstractGame() {
+    public AbstractGame(Difficulty difficulty) {
+        this.difficulty = difficulty;
+        musicManager.playBgmMusic(MusicType.BGM, true);
         // 1. 初始化英雄机（通用）
         HeroAircraft.reset();
         heroAircraft = HeroAircraft.getInstance(
@@ -126,7 +133,7 @@ public abstract class AbstractGame extends JPanel {
         initEnemyFactories();
 
         // 4. 初始化鼠标监听（通用）
-        // new HeroController(this, heroAircraft);
+        new HeroController(this, heroAircraft);
 
         // 5. 初始化定时器（通用）
         this.timer = new Timer("game-action-timer", true);
@@ -137,11 +144,11 @@ public abstract class AbstractGame extends JPanel {
 
     // 具体方法：初始化工厂映射
     private void initEnemyFactories() {
-        enemyFactories.put(EnemyType.MOB, new MobEnemyFactory());
-        enemyFactories.put(EnemyType.ELITE, new EliteEnemyFactory());
-        enemyFactories.put(EnemyType.VETERAN, new VeteranEnemyFactory());
-        enemyFactories.put(EnemyType.ACE, new AceEnemyFactory());
-        enemyFactories.put(EnemyType.BOSS, new BossEnemyFactory());
+        enemyFactories.put(EnemyType.MOB, new MobEnemyFactory(enemyHpFactor, enemySpeedFactor));
+        enemyFactories.put(EnemyType.ELITE, new EliteEnemyFactory(enemyHpFactor, enemySpeedFactor));
+        enemyFactories.put(EnemyType.VETERAN, new VeteranEnemyFactory(enemyHpFactor, enemySpeedFactor));
+        enemyFactories.put(EnemyType.ACE, new AceEnemyFactory(enemyHpFactor, enemySpeedFactor));
+        enemyFactories.put(EnemyType.BOSS, new BossEnemyFactory(enemyHpFactor, enemySpeedFactor));
     }
 
     // 抽象方法：初始化游戏设置（由子类实现）
@@ -236,7 +243,8 @@ public abstract class AbstractGame extends JPanel {
     protected void spawnBossEnemy() {
         musicManager.stopBgmMusic(MusicType.BGM);
         musicManager.playBgmMusic(MusicType.BGM_BOSS, true);
-        bossEnemy = new BossEnemyFactory().createEnemy(getRandomWidth(EnemyType.BOSS), 0);
+        bossEnemy = enemyFactories.get(EnemyType.BOSS).createEnemy(getRandomWidth(EnemyType.BOSS),
+                0);
         bossEnemy.setHp(setBossEnemyHp());
         enemyAircrafts.add(bossEnemy);
         bossSpawned = true;
@@ -264,9 +272,9 @@ public abstract class AbstractGame extends JPanel {
      */
     protected void createRandomEnemy() {
         enemySpawnCounter++;
-        if (enemySpawnCounter >= getEnemySpawnCycle()) {
+        if (enemySpawnCounter >= enemySpawnCycle) {
             enemySpawnCounter = 0;
-            if (enemyAircrafts.size() < getEnemyMaxNumber()) {
+            if (enemyAircrafts.size() < enemyMaxNumber) {
                 AbstractAircraft enemyAircraft = enemyFactories.get(getRandomEnemyType()).createEnemy(
                         getRandomWidth(getRandomEnemyType()),
                         getRandomHeight());
@@ -274,10 +282,6 @@ public abstract class AbstractGame extends JPanel {
             }
         }
     }
-
-    protected abstract int getEnemySpawnCycle();
-
-    protected abstract int getEnemyMaxNumber();
 
     /**
      * ! Action部分
@@ -287,18 +291,17 @@ public abstract class AbstractGame extends JPanel {
      * 射击部分
      */
     protected void shootAction() {
-        shootCounter++;
-        if (shootCounter >= getHeroShootCycle()) {
+        heroShootCounter++;
+        enemyShootCounter++;
+        if (heroShootCounter >= heroShootCycle) {
+            heroShootCounter = 0;
             heroShoot();
         }
-        if (shootCounter >= getEnemyShootCycle()) {
+        if (enemyShootCounter >= enemyShootCycle) {
+            enemyShootCounter = 0;
             enemyShoot();
         }
     }
-
-    protected abstract int getHeroShootCycle();
-
-    protected abstract int getEnemyShootCycle();
 
     protected void heroShoot() {
         // 英雄机射击
@@ -400,7 +403,7 @@ public abstract class AbstractGame extends JPanel {
             if (prop.crash(heroAircraft)) {
                 musicManager.playEffectMusic(MusicType.GET_SUPPLY);
                 // todo 需要修改 AbstractProp中的 activate的参数类型
-                // prop.activate(heroAircraft, this);
+                prop.activate(heroAircraft, this);
                 prop.vanish();
             }
         }

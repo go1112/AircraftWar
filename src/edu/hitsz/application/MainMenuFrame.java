@@ -7,7 +7,6 @@ import edu.hitsz.application.game.AdvancedGame;
 import edu.hitsz.application.game.BasicGame;
 import edu.hitsz.application.game.BeginningGame;
 import edu.hitsz.application.game.ExpertGame;
-import edu.hitsz.application.game.Game;
 import edu.hitsz.application.game.IntermendtateGame;
 import edu.hitsz.rank.Difficulty;
 import edu.hitsz.rank.PlayRecordDao;

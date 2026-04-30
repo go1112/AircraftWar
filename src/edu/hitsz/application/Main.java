@@ -2,7 +2,6 @@ package edu.hitsz.application;
 
 // 用于创建窗口 设置尺寸 获取屏幕信息等
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * 程序入口

@@ -29,29 +29,29 @@ public class IntermendtateGame extends AbstractGame {
 
         this.initHeroHp = 500;
 
-        this.enemyMaxNumber = 8;
-        this.enemySpawnCycle = 20;
-        this.heroShootCycle = 20;
-        this.enemyShootCycle = 20;
-        this.enemyHpFactor = 1.0;
-        this.enemySpeedFactor = 1.0;
+        this.enemyMaxNumber = 10;
+        this.enemySpawnCycle = 15;
+        this.heroShootCycle = 15;
+        this.enemyShootCycle = 15;
+        this.enemyHpFactor = 1.2;
+        this.enemySpeedFactor = 1.2;
 
         this.scoreThreshold = 1000;
 
-        this.propRand = 0.8;
-        this.difficultyLevelUpInterval = 3000; // 每2分钟提高游戏难度
+        this.propRand = 0.6;
+        this.difficultyLevelUpInterval = 1500; 
     }
 
     @Override
     protected EnemyType getRandomEnemyType() {
         double rand = Math.random();
-        if (rand < 0.5)
-            return EnemyType.MOB; // 50% 普通
-        if (rand < 0.75)
+        if (rand < 0.4)
+            return EnemyType.MOB; // 40% 普通
+        if (rand < 0.65)
             return EnemyType.ELITE; // 25% 精英
-        if (rand < 0.90)
-            return EnemyType.VETERAN; // 15% 精锐
-        return EnemyType.ACE; // 10% 王牌
+        if (rand < 0.85)
+            return EnemyType.VETERAN; // 20% 精锐
+        return EnemyType.ACE; // 15% 王牌
     }
 
     @Override

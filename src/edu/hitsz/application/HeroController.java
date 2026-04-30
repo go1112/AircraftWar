@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
  * 
  * @author hitsz
  */
+@SuppressWarnings("all")
 public class HeroController {
     // private Game game;
     private AbstractGame game;

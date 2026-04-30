@@ -29,29 +29,29 @@ public class ExpertGame extends AbstractGame{
 
         this.initHeroHp = 500;
 
-        this.enemyMaxNumber = 8;
-        this.enemySpawnCycle = 20;
+        this.enemyMaxNumber = 15;
+        this.enemySpawnCycle = 10;
         this.heroShootCycle = 20;
-        this.enemyShootCycle = 20;
-        this.enemyHpFactor = 1.0;
-        this.enemySpeedFactor = 1.0;
+        this.enemyShootCycle = 10;
+        this.enemyHpFactor = 1.8;
+        this.enemySpeedFactor = 1.8;
 
-        this.scoreThreshold = 1000;
+        this.scoreThreshold = 400;
 
-        this.propRand = 0.8;
-        this.difficultyLevelUpInterval = 3000; // 每2分钟提高游戏难度
+        this.propRand = 0.25;
+        this.difficultyLevelUpInterval = 500; 
     }
 
     @Override
     protected EnemyType getRandomEnemyType() {
         double rand = Math.random();
-        if (rand < 0.5)
-            return EnemyType.MOB; // 50% 普通
-        if (rand < 0.75)
-            return EnemyType.ELITE; // 25% 精英
-        if (rand < 0.90)
-            return EnemyType.VETERAN; // 15% 精锐
-        return EnemyType.ACE; // 10% 王牌
+        if (rand < 0.2)
+            return EnemyType.MOB; // 20% 普通
+        if (rand < 0.4)
+            return EnemyType.ELITE; // 20% 精英
+        if (rand < 0.65)
+            return EnemyType.VETERAN; // 25% 精锐
+        return EnemyType.ACE; // 35% 王牌
     }
 
     @Override
@@ -84,15 +84,17 @@ public class ExpertGame extends AbstractGame{
 
     @Override
     protected void difficultyLevelUp() {
-        this.enemyMaxNumber = Math.min(15, this.enemyMaxNumber + 1);
-        this.enemySpawnCycle = Math.max(10, this.enemySpawnCycle * 0.9);
-        this.enemyHpFactor = Math.min(2, this.enemyHpFactor * 1.1);
-        this.enemySpeedFactor = Math.min(2, this.enemySpeedFactor * 1.1);
+        this.enemyMaxNumber = Math.min(20, this.enemyMaxNumber + 1);
+        this.enemySpawnCycle = Math.max(8, this.enemySpawnCycle * 0.9);
+        this.enemyHpFactor = Math.min(2.5, this.enemyHpFactor * 1.1);
+        this.enemySpeedFactor = Math.min(2.5, this.enemySpeedFactor * 1.1);
+        this.heroShootCycle = Math.min(35,this.heroShootCycle + 2);
         System.out.println("==========提高难度===========");
         System.out.println(String.format("敌机最大数量 = %d 个",enemyMaxNumber));
         System.out.println(String.format("敌机产生周期 = %.2f 秒",(double) enemySpawnCycle * 50 / 1000));
         System.out.println(String.format("敌机血量增值 = %.2f 倍",enemyHpFactor));
         System.out.println(String.format("敌机速度增值 = %.2f 倍",enemySpeedFactor));
+        System.out.println(String.format("英雄机子弹产生周期 = %.2f 秒",(double) enemyShootCycle * 50 / 1000));
         System.out.println("============================");
     }
 

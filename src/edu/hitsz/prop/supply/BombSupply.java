@@ -7,7 +7,6 @@ import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.aircraft.MobEnemy;
 import edu.hitsz.aircraft.VeteranEnemy;
 import edu.hitsz.application.game.AbstractGame;
-import edu.hitsz.application.game.Game;
 import edu.hitsz.prop.AbstractProp;
 import edu.hitsz.prop.PropType;
 import edu.hitsz.prop.observer.EnemyObserver;

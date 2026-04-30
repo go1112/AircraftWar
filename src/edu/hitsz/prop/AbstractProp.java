@@ -3,7 +3,6 @@ package edu.hitsz.prop;
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Main;
 import edu.hitsz.application.game.AbstractGame;
-import edu.hitsz.application.game.Game;
 import edu.hitsz.basic.AbstractFlyingObject;
 
 public abstract class AbstractProp extends AbstractFlyingObject {

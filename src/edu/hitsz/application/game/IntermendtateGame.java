@@ -27,7 +27,8 @@ public class IntermendtateGame extends AbstractGame {
             e.printStackTrace();
         }
 
-        this.initHeroHp = 500;
+        this.initHeroHp = 1000;
+        this.bossEnemyHp = 1000;
 
         this.enemyMaxNumber = 10;
         this.enemySpawnCycle = 15;
@@ -39,7 +40,7 @@ public class IntermendtateGame extends AbstractGame {
         this.scoreThreshold = 1000;
 
         this.propRand = 0.6;
-        this.difficultyLevelUpInterval = 1500; 
+        this.difficultyLevelUpInterval = 1500;
     }
 
     @Override
@@ -60,6 +61,11 @@ public class IntermendtateGame extends AbstractGame {
     }
 
     @Override
+    protected int setBossEnemyHp() {
+        return this.bossEnemyHp;
+    }
+
+    @Override
     protected void triggerProp(AbstractAircraft enemyAircraft) {
 
         if (!(enemyAircraft instanceof BossEnemy)) {
@@ -75,7 +81,7 @@ public class IntermendtateGame extends AbstractGame {
                 }
             }
 
-            scoreThreshold = (int) (score * 1.5);
+            scoreThreshold = (int) (score * 1.2);
             bossSpawned = false;
             // System.out.println("BOSS敌机被击毁 下次出现的分数阈值为：" + scoreThreshold);
         }

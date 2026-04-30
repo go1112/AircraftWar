@@ -39,6 +39,7 @@ public class BossEnemy extends AbstractAircraft {
         } else {
             newProp = PropFactory.createProp(PropType.FROZEN, propX, propY);
         }
+        System.out.println("产生" + newProp.getClass() + " 横坐标：" + propX);
 
         return newProp;
 

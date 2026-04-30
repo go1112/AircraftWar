@@ -12,16 +12,16 @@ public class AceEnemyFactory implements EnemyFactory {
     private int hp;
     private int speedX;
     private int speedY;
-    
-    public AceEnemyFactory(double enemyHpFactor,double enemySpeedFactor) {
-        this.hp = (int)(EnemyType.ACE.getHp() * enemyHpFactor);
-        this.speedX = (int)(EnemyType.ACE.getSpeedX() * enemySpeedFactor);
-        this.speedY = (int)(EnemyType.ACE.getSpeedY() * enemySpeedFactor);
+
+    public AceEnemyFactory(double enemyHpFactor, double enemySpeedFactor) {
+        this.hp = (int) (EnemyType.ACE.getHp() * enemyHpFactor);
+        this.speedY = (int) (EnemyType.ACE.getSpeedY() * enemySpeedFactor);
     }
 
     @Override
     public AbstractAircraft createEnemy(int x, int y) {
-        AceEnemy enemy = new AceEnemy(x, y, speedX, speedY, hp);
+        AceEnemy enemy = Math.random() > 0.5 ? new AceEnemy(x, y, speedX, speedY, hp)
+                : new AceEnemy(x, y, -speedX, speedY, hp);
         enemy.setShootStrategy(new ScatterShoot(3)); // 散射
         return enemy;
     }

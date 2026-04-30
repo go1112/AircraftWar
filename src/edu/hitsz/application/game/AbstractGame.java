@@ -48,6 +48,8 @@ public abstract class AbstractGame extends JPanel {
     protected final HeroAircraft heroAircraft;
     protected int initHeroHp = 200;
 
+    protected int bossEnemyHp = 100;
+
     protected final List<AbstractAircraft> enemyAircrafts; // 多态数组
     protected final List<BaseBullet> heroBullets;
     protected final List<BaseBullet> enemyBullets;
@@ -271,6 +273,7 @@ public abstract class AbstractGame extends JPanel {
         bossEnemy.setHp(setBossEnemyHp());
         enemyAircrafts.add(bossEnemy);
         bossSpawned = true;
+        System.out.println(String.format("BOSS敌机登场 血量为：%d", bossEnemyHp));
     }
 
     /**
@@ -280,7 +283,7 @@ public abstract class AbstractGame extends JPanel {
      * 
      */
     protected int setBossEnemyHp() {
-        return 1000;
+        return bossEnemyHp;
     }
 
     /**

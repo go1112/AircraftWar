@@ -27,7 +27,8 @@ public class AdvancedGame extends AbstractGame {
             e.printStackTrace();
         }
 
-        this.initHeroHp = 500;
+        this.initHeroHp = 1000;
+        this.bossEnemyHp = 500;
 
         this.enemyMaxNumber = 12;
         this.enemySpawnCycle = 12;
@@ -57,6 +58,12 @@ public class AdvancedGame extends AbstractGame {
     @Override
     protected boolean shouldSpawnBoss() {
         return !bossSpawned && score >= scoreThreshold && (bossEnemy == null || bossEnemy.notValid());
+    }
+
+    @Override
+    protected int setBossEnemyHp() {
+        this.bossEnemyHp += 100;
+        return this.bossEnemyHp;
     }
 
     @Override

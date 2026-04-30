@@ -27,7 +27,8 @@ public class ExpertGame extends AbstractGame{
             e.printStackTrace();
         }
 
-        this.initHeroHp = 500;
+        this.initHeroHp = 1000;
+        this.bossEnemyHp = 500;
 
         this.enemyMaxNumber = 15;
         this.enemySpawnCycle = 10;
@@ -60,6 +61,12 @@ public class ExpertGame extends AbstractGame{
     }
 
     @Override
+    protected int setBossEnemyHp() {
+        this.bossEnemyHp += 200;
+        return this.bossEnemyHp;
+    }
+
+    @Override
     protected void triggerProp(AbstractAircraft enemyAircraft) {
 
         if (!(enemyAircraft instanceof BossEnemy)) {
@@ -81,6 +88,7 @@ public class ExpertGame extends AbstractGame{
         }
 
     }
+
 
     @Override
     protected void difficultyLevelUp() {

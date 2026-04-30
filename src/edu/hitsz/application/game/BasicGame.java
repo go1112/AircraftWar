@@ -28,6 +28,7 @@ public class BasicGame extends AbstractGame {
         }
 
         this.initHeroHp = 500;
+        this.bossEnemyHp = 500;
 
         this.enemyMaxNumber = 8;
         this.enemySpawnCycle = 20;
@@ -36,7 +37,7 @@ public class BasicGame extends AbstractGame {
         this.enemyHpFactor = 1.0;
         this.enemySpeedFactor = 1.0;
 
-        this.scoreThreshold = 1000;
+        this.scoreThreshold = 100;
 
         this.propRand = 0.8;
         this.difficultyLevelUpInterval = 3000; // 每2分钟提高游戏难度

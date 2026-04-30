@@ -35,5 +35,4 @@ public enum EnemyType {
         return speedY;
     }
     
-    
 }

@@ -1,7 +1,6 @@
 package edu.hitsz.prop;
 
 import edu.hitsz.aircraft.HeroAircraft;
-import edu.hitsz.application.game.Game;
 import edu.hitsz.shoot.ShootStrategy;
 import edu.hitsz.shoot.StraightShoot;
 
@@ -9,9 +8,6 @@ public class PropEffectTimer implements Runnable {
     private int durationSeconds;
     private HeroAircraft heroAircraft;
     private ShootStrategy originalStrategy = new StraightShoot(3);
-    private AbstractProp prop;
-    private Game game;
-
     private volatile boolean isCancelled = false;
 
     public PropEffectTimer(int durationSeconds, HeroAircraft heroAircraft) {

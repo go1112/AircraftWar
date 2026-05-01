@@ -12,11 +12,9 @@ public class EliteEnemyFactory implements EnemyFactory {
     private int hp;
     private int speedX;
     private int speedY;
-    
-    public EliteEnemyFactory(double enemyHpFactor,double enemySpeedFactor) {
-        this.hp = (int)(EnemyType.ELITE.getHp() * enemyHpFactor);
-        this.speedX = (int)(EnemyType.ELITE.getSpeedX() * enemySpeedFactor);
-        this.speedY = (int)(EnemyType.ELITE.getSpeedY() * enemySpeedFactor);
+
+    public EliteEnemyFactory(double enemyHpFactor, double enemySpeedFactor) {
+        setParams(enemyHpFactor, enemySpeedFactor);
     }
 
     @Override
@@ -24,5 +22,12 @@ public class EliteEnemyFactory implements EnemyFactory {
         EliteEnemy enemy = new EliteEnemy(x, y, speedX, speedY, hp);
         enemy.setShootStrategy(new StraightShoot(1)); // 单排直射
         return enemy;
+    }
+
+    @Override
+    public void setParams(double enemyHpFactor, double enemySpeedFactor) {
+        this.hp = (int) (EnemyType.ELITE.getHp() * enemyHpFactor);
+        this.speedX = (int) (EnemyType.ELITE.getSpeedX() * enemySpeedFactor);
+        this.speedY = (int) (EnemyType.ELITE.getSpeedY() * enemySpeedFactor);
     }
 }

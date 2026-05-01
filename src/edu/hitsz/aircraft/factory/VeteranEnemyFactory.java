@@ -14,9 +14,7 @@ public class VeteranEnemyFactory implements EnemyFactory {
     private int speedY;
 
     public VeteranEnemyFactory(double enemyHpFactor, double enemySpeedFactor) {
-        this.hp = (int) (EnemyType.VETERAN.getHp() * enemyHpFactor);
-        this.speedX = (int) (EnemyType.VETERAN.getSpeedX() * enemySpeedFactor);
-        this.speedY = (int) (EnemyType.VETERAN.getSpeedY() * enemySpeedFactor);
+        setParams(enemyHpFactor, enemySpeedFactor);
     }
 
     @Override
@@ -25,5 +23,12 @@ public class VeteranEnemyFactory implements EnemyFactory {
                 : new VeteranEnemy(x, y, -speedX, speedY, hp);
         enemy.setShootStrategy(new StraightShoot(2)); // 双排直射
         return enemy;
+    }
+
+    @Override
+    public void setParams(double enemyHpFactor, double enemySpeedFactor) {
+        this.hp = (int) (EnemyType.VETERAN.getHp() * enemyHpFactor);
+        this.speedX = (int) (EnemyType.VETERAN.getSpeedX() * enemySpeedFactor);
+        this.speedY = (int) (EnemyType.VETERAN.getSpeedY() * enemySpeedFactor);
     }
 }

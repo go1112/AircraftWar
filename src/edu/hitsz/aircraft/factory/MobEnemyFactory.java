@@ -11,15 +11,20 @@ public class MobEnemyFactory implements EnemyFactory {
     private int hp;
     private int speedX;
     private int speedY;
-    
-    public MobEnemyFactory(double enemyHpFactor,double enemySpeedFactor) {
-        this.hp = (int)(EnemyType.MOB.getHp() * enemyHpFactor);
-        this.speedX = (int)(EnemyType.MOB.getSpeedX() * enemySpeedFactor);
-        this.speedY = (int)(EnemyType.MOB.getSpeedY() * enemySpeedFactor);
+
+    public MobEnemyFactory(double enemyHpFactor, double enemySpeedFactor) {
+        setParams(enemyHpFactor, enemySpeedFactor);
     }
+
     @Override
     public AbstractAircraft createEnemy(int x, int y) {
         return new MobEnemy(x, y, speedX, speedY, hp);
     }
 
+    @Override
+    public void setParams(double enemyHpFactor, double enemySpeedFactor) {
+        this.hp = (int) (EnemyType.MOB.getHp() * enemyHpFactor);
+        this.speedX = (int) (EnemyType.MOB.getSpeedX() * enemySpeedFactor);
+        this.speedY = (int) (EnemyType.MOB.getSpeedY() * enemySpeedFactor);
+    }
 }

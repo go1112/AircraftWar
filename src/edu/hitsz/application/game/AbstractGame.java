@@ -154,12 +154,20 @@ public abstract class AbstractGame extends JPanel {
 
     // 具体方法：初始化工厂映射
     private void initEnemyFactories() {
-        enemyAircrafts.clear();
-        enemyFactories.put(EnemyType.MOB, new MobEnemyFactory(enemyHpFactor, enemySpeedFactor));
-        enemyFactories.put(EnemyType.ELITE, new EliteEnemyFactory(enemyHpFactor, enemySpeedFactor));
-        enemyFactories.put(EnemyType.VETERAN, new VeteranEnemyFactory(enemyHpFactor, enemySpeedFactor));
-        enemyFactories.put(EnemyType.ACE, new AceEnemyFactory(enemyHpFactor, enemySpeedFactor));
-        enemyFactories.put(EnemyType.BOSS, new BossEnemyFactory(enemyHpFactor, enemySpeedFactor));
+        if (enemyFactories.size() == 0) {
+            enemyFactories.put(EnemyType.MOB, new MobEnemyFactory(enemyHpFactor, enemySpeedFactor));
+            enemyFactories.put(EnemyType.ELITE, new EliteEnemyFactory(enemyHpFactor, enemySpeedFactor));
+            enemyFactories.put(EnemyType.VETERAN, new VeteranEnemyFactory(enemyHpFactor, enemySpeedFactor));
+            enemyFactories.put(EnemyType.ACE, new AceEnemyFactory(enemyHpFactor, enemySpeedFactor));
+            enemyFactories.put(EnemyType.BOSS, new BossEnemyFactory(enemyHpFactor,
+                    enemySpeedFactor));
+        } else {
+            enemyFactories.get(EnemyType.MOB).setParams(enemyHpFactor, enemySpeedFactor);
+            enemyFactories.get(EnemyType.ELITE).setParams(enemyHpFactor, enemySpeedFactor);
+            enemyFactories.get(EnemyType.VETERAN).setParams(enemyHpFactor, enemySpeedFactor);
+            enemyFactories.get(EnemyType.ACE).setParams(enemyHpFactor, enemySpeedFactor);
+            enemyFactories.get(EnemyType.BOSS).setParams(enemyHpFactor, enemySpeedFactor);
+        }
     }
 
     // 抽象方法：初始化游戏设置（由子类实现）
@@ -180,6 +188,8 @@ public abstract class AbstractGame extends JPanel {
                     difficultyLevelUp();
                     initEnemyFactories();
                 }
+
+                printInfo();
 
                 createRandomEnemy();
 
@@ -207,6 +217,23 @@ public abstract class AbstractGame extends JPanel {
         };
         // 以固定延迟时间进行执行：本次任务执行完成后，延迟 timeInterval 再执行下一次
         timer.schedule(task, 0, timeInterval);
+    }
+
+    private void printInfo() {
+        if (gameTime % 25 == 0) {
+            if (bossEnemy != null && !bossEnemy.notValid()) {
+                System.out.println("BOSS状态 - 血量: " + bossEnemy.getHp() +
+                        ", 有效: " + !bossEnemy.notValid());
+            } else {
+                System.out.println(String.format("距离BOSS敌机登场 还差 %d 分 !!!", scoreThreshold - score));
+            }
+
+            double levelUpTime = (double) (difficultyLevelUpInterval - gameTime % difficultyLevelUpInterval)
+                    * timeInterval / 1000;
+            if (levelUpTime < 5) {
+                System.out.println(String.format("距离游戏难度提升 还有 %.2f 秒", levelUpTime));
+            }
+        }
     }
 
     private boolean shouldLevelUp() {
@@ -268,7 +295,7 @@ public abstract class AbstractGame extends JPanel {
     protected void spawnBossEnemy() {
         musicManager.stopBgmMusic(MusicType.BGM);
         musicManager.playBgmMusic(MusicType.BGM_BOSS, true);
-        bossEnemy = enemyFactories.get(EnemyType.BOSS).createEnemy(getRandomWidth(EnemyType.BOSS),
+        bossEnemy = new BossEnemyFactory(enemyHpFactor, enemySpeedFactor).createEnemy(getRandomWidth(EnemyType.BOSS),
                 0);
         bossEnemy.setHp(setBossEnemyHp());
         enemyAircrafts.add(bossEnemy);

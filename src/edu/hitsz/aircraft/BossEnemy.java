@@ -23,6 +23,12 @@ public class BossEnemy extends AbstractAircraft {
     }
 
     @Override
+    public void vanish() {
+        super.vanish();
+        System.out.println("BOSS敌机消失了.. 血量为 " + this.hp);
+    }
+
+    @Override
     public AbstractProp obtainProp(AbstractAircraft enemyAircraft, double rand) {
         int propX = enemyAircraft.getLocationX();
         int propY = enemyAircraft.getLocationY();

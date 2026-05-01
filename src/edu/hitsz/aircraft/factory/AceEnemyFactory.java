@@ -14,8 +14,7 @@ public class AceEnemyFactory implements EnemyFactory {
     private int speedY;
 
     public AceEnemyFactory(double enemyHpFactor, double enemySpeedFactor) {
-        this.hp = (int) (EnemyType.ACE.getHp() * enemyHpFactor);
-        this.speedY = (int) (EnemyType.ACE.getSpeedY() * enemySpeedFactor);
+        setParams(enemyHpFactor, enemySpeedFactor);
     }
 
     @Override
@@ -24,5 +23,12 @@ public class AceEnemyFactory implements EnemyFactory {
                 : new AceEnemy(x, y, -speedX, speedY, hp);
         enemy.setShootStrategy(new ScatterShoot(3)); // 散射
         return enemy;
+    }
+
+    @Override
+    public void setParams(double enemyHpFactor, double enemySpeedFactor) {
+        this.hp = (int) (EnemyType.ACE.getHp() * enemyHpFactor);
+        this.speedX = (int) (EnemyType.ACE.getSpeedX() * enemySpeedFactor);
+        this.speedY = (int) (EnemyType.ACE.getSpeedY() * enemySpeedFactor);
     }
 }
